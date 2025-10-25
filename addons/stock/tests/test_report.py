@@ -3,7 +3,7 @@
 
 from datetime import date, datetime, timedelta
 
-from odoo.tests import Form, TransactionCase
+from odoo.tests import Form, tagged, TransactionCase
 from odoo import Command
 
 
@@ -25,6 +25,11 @@ class TestReportsCommon(TransactionCase):
             'tracking': 'lot',
             'default_code': 'C4181234""154654654654',
             'barcode': 'scan""me'
+        })
+        cls.serial_product = cls.env['product.product'].create({
+            'name': 'simple prod',
+            'is_storable': True,
+            'tracking': 'serial',
         })
 
         product_form = Form(cls.env['product.product'])
@@ -1951,3 +1956,131 @@ class TestReports(TestReportsCommon):
 
         Report.action_unassign(out_move.id, out_move.quantity, in_move.ids)
         self.assertEqual(out_move.procure_method, 'make_to_stock')
+
+
+@tagged('-at_install', 'post_install')
+class TestReportsPostInstall(TestReportsCommon):
+
+    def test_report_stock_lot_customer_simple_delivery(self):
+        serial_product = self.serial_product
+        delivery = self.env['stock.picking'].create({
+            'partner_id': self.partner.id,
+            'picking_type_id': self.ref('stock.picking_type_out'),
+            'location_id': self.ref('stock.stock_location_stock'),
+            'location_dest_id': self.ref('stock.stock_location_customers'),
+            'move_ids': [Command.create({
+                'name': f'out 1 units {serial_product.name}',
+                'product_id': serial_product.id,
+                'product_uom_qty': 1,
+                'quantity': 1,
+                'location_id': self.ref('stock.stock_location_stock'),
+                'location_dest_id': self.ref('stock.stock_location_customers'),
+            })],
+        })
+        delivery.move_ids.write({'lot_ids': [Command.create({'name': 'ad-hoc-sn', 'product_id': serial_product.id})]})
+        delivery.button_validate()
+        customer_lots = self.env['stock.lot.report'].search([('partner_id', '=', self.partner.id)])
+        self.assertRecordValues(
+            customer_lots,
+            [{
+                'lot_id': delivery.move_line_ids.lot_id.id,
+                'picking_id': delivery.id,
+                'quantity': 1.0,
+            }]
+        )
+
+    def test_report_stock_lot_customer_sml_without_picking(self):
+        """
+        Deliver a classic product and a tracked one
+        The SML of the SN is not directly linked to the picking
+        The report should still show the delivered SN
+        """
+        stock_location = self.env.ref('stock.stock_location_stock')
+        customer_location = self.env.ref('stock.stock_location_customers')
+        out_type = self.env.ref('stock.picking_type_out')
+
+        delivery = self.env['stock.picking'].create({
+            'partner_id': self.partner.id,
+            'picking_type_id': out_type.id,
+            'location_id': stock_location.id,
+            'location_dest_id': customer_location.id,
+            'move_ids': [Command.create({
+                'name': f'out 1 units {self.product.name}',
+                'product_id': self.product.id,
+                'product_uom_qty': 1,
+                'quantity': 1,
+                'location_id': stock_location.id,
+                'location_dest_id': customer_location.id,
+            })],
+        })
+        delivery.action_confirm()
+
+        sn = self.env['stock.lot'].create({'name': 'supersn', 'product_id': self.serial_product.id})
+        delivery.move_ids = [Command.create({
+            'name': f'out 1 units {self.product.name}',
+            'product_id': self.serial_product.id,
+            'product_uom_qty': 1,
+            'location_id': stock_location.id,
+            'location_dest_id': customer_location.id,
+            'move_line_ids': [Command.create({
+                'product_id': self.serial_product.id,
+                'quantity': 1,
+                'lot_id': sn.id,
+            })],
+        })]
+
+        delivery.button_validate()
+
+        customer_lots = self.env['stock.lot.report'].search([('partner_id', '=', self.partner.id)])
+        self.assertRecordValues(customer_lots, [
+            {'lot_id': sn.id, 'picking_id': delivery.id, 'quantity': 1.0},
+        ])
+
+    def test_stock_reception_partial_available_move_assign(self):
+        """
+        Test partial assignment, unassignment, and reassignment of moves via
+        the Reception Report when some quantity is already available in stock
+        and the rest comes from an incoming receipt.
+        This ensures that after unassign/assign, the reservations remain
+        consistent: the stock already available stays reserved, and the
+        incoming quantity can be reassigned correctly.
+        """
+        warehouse_1 = self.env.ref('stock.warehouse0')
+        shelf1 = self.env['stock.location'].create({
+            'name': 'Shelf 1',
+            'location_id': warehouse_1.lot_stock_id.id,
+        })
+        self.env['stock.quant']._update_available_quantity(self.product, shelf1, 2.0)
+        picking_out = self.env['stock.picking'].create({
+            'picking_type_id': self.ref('stock.picking_type_out'),
+            'location_id': warehouse_1.lot_stock_id.id,
+            'location_dest_id': self.ref('stock.stock_location_customers'),
+            'move_ids': [Command.create({
+                'name': 'test_out_1',
+                'product_id': self.product.id,
+                'product_uom': self.ref('uom.product_uom_unit'),
+                'product_uom_qty': 3.0,
+            })],
+        })
+        out_move = picking_out.move_ids
+        self.env.ref('stock.picking_type_out').reservation_method = 'at_confirm'
+        picking_out.action_confirm()
+        picking_in = self.env['stock.picking'].create({
+            'picking_type_id': self.ref('stock.picking_type_in'),
+            'location_id': self.ref('stock.stock_location_suppliers'),
+            'location_dest_id': warehouse_1.lot_stock_id.id,
+            'move_ids': [Command.create({
+                'name': 'test_in',
+                'product_id': self.product.id,
+                'product_uom': self.ref('uom.product_uom_unit'),
+                'product_uom_qty': 1.0,
+            })],
+        })
+        picking_in.action_confirm()
+        picking_in.button_validate()
+        self.env['report.stock.report_reception'].action_assign(out_move.ids, [1.0], picking_in.move_ids.ids)
+        self.assertEqual(picking_out.move_ids.mapped('quantity'), [1.0, 2.0])
+        self.env['report.stock.report_reception'].action_unassign(out_move.id, 1, picking_in.move_ids.ids)
+        self.assertEqual(picking_out.move_ids.mapped('quantity'), [0.0, 2.0])
+        self.env['report.stock.report_reception'].action_assign(out_move.ids, [1.0], picking_in.move_ids.ids)
+        self.assertEqual(picking_out.move_ids.mapped('quantity'), [1.0, 2.0])

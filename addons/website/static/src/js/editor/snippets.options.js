@@ -227,7 +227,7 @@ const FontFamilyPickerUserValueWidget = SelectUserValueWidget.extend({
 
         const fontsToLoad = [];
         for (const font of this.googleFonts) {
-            const fontURL = `https://fonts.googleapis.com/css?family=${encodeURIComponent(font).replace(/%20/g, '+')}`;
+            const fontURL = `https://fonts.googleapis.com/css?family=${encodeURIComponent(font).replace(/%20/g, '+')}:300,300i,400,400i,700,700i`;
             fontsToLoad.push(fontURL);
         }
         for (const font of this.googleLocalFonts) {
@@ -2454,6 +2454,12 @@ options.registry.Parallax = options.Class.extend({
                 this.parallaxEl = document.createElement('span');
                 this.parallaxEl.classList.add('s_parallax_bg');
                 this.$target.prepend(this.parallaxEl);
+                // Remove the repeat class and background-size from the original
+                // target to prevent gradient repetition in multi-background
+                // setup (image + gradient).
+                const targetEl = this.$target[0];
+                targetEl.style.removeProperty("background-size");
+                targetEl.classList.remove("o_bg_img_opt_repeat");
             }
         } else {
             if (this.parallaxEl) {
@@ -4251,6 +4257,18 @@ options.registry.MegaMenuLayout = options.registry.SelectTemplate.extend({
         const templateDefiningClass = this.containerEl.querySelector('section')
             .classList.value.split(' ').filter(cl => cl.startsWith('s_mega_menu'))[0];
         return `website.${templateDefiningClass}`;
+    },
+    /**
+     * @override
+     */
+    async _computeWidgetVisibility(widgetName, params) {
+        if (params.optionsPossibleValues.selectClass?.includes("o_mega_menu_container_size")) {
+            const headerTemplate = weUtils.getCSSVariableValue("header-template");
+            if (["hamburger", "sidebar"].includes(headerTemplate.slice(1, -1))) {
+                return false;
+            }
+        }
+        return this._super(...arguments);
     },
 });
 

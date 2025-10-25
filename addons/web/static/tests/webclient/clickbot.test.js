@@ -356,7 +356,7 @@ test("clickbot show rpc error when an error dialog is detected", async () => {
             },
         },
     });
-    onRpc("web_search_read", async () => {
+    onRpc("web_search_read", () => {
         if (clickBotStarted) {
             if (id === 3) {
                 // click on the Second Filter
@@ -439,6 +439,7 @@ test("clickbot show rpc error when an error dialog is detected", async () => {
                 debug: "traceback",
                 arguments: [],
                 context: {},
+                message: "This is a server Error, it should be displayed in an error dialog",
             },
             exceptionName: "odoo.exceptions.Programming error",
             subType: "server",

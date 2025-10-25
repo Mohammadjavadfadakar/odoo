@@ -239,7 +239,7 @@ msgstr "الاسم"
 #: code:addons/certificate/models/certificate.py:0
 msgid ""
 "No private key linked to the certificate, it is required to sign documents."
-msgstr ""
+msgstr "لا يوجد مفتاح خاص مرتبط بالشهادة، فهو مطلوب لتوقيع المستندات. "
 
 #. module: certificate
 #: model_terms:ir.ui.view,arch_db:certificate.certificate_certificate_view_search
@@ -351,8 +351,20 @@ msgstr "التاريخ الذي تبدأ فيه مدة سريان الشهادة
 #. module: certificate
 #. odoo-python
 #: code:addons/certificate/models/key.py:0
+msgid "The key size should be at least 512 bytes."
+msgstr "يجب أن يكون حجم المفتاح 512 بايت على الأقل. "
+
+#. module: certificate
+#. odoo-python
+#: code:addons/certificate/models/key.py:0
 msgid "The private key could not be loaded."
 msgstr "تعذر تحميل المفتاح الخاص. "
+
+#. module: certificate
+#. odoo-python
+#: code:addons/certificate/models/key.py:0
+msgid "The public exponent should be 65537 (or 3 for legacy purposes)."
+msgstr ""
 
 #. module: certificate
 #. odoo-python
@@ -377,7 +389,7 @@ msgstr "الرقم التسلسلي لإضافته إلى المستندات ا�
 msgid ""
 "This certificate could not be loaded. Either the content or the password is "
 "erroneous."
-msgstr ""
+msgstr "تعذر تحميل هذه الشهادة. إما أن المحتوى أو كلمة المرور خاطئة. "
 
 #. module: certificate
 #. odoo-python
@@ -391,7 +403,7 @@ msgstr "هذه الشهادة غير صالحة، فقد انتهت صلاحيت
 msgid ""
 "This key could not be loaded. Either its content or its password is "
 "erroneous."
-msgstr ""
+msgstr "تعذر تحميل هذا المفتاح. إما أن المحتوى أو كلمة المرور خاطئة. "
 
 #. module: certificate
 #. odoo-python
@@ -410,6 +422,8 @@ msgid ""
 "Unsupported asymmetric cryptography algorithm '%s'. Currently supported for "
 "signature: EC and RSA."
 msgstr ""
+"خوارزمية التشفير غير المتماثل غير مدعومة '%s'. المدعومة حالياً للتوقيع: EC و"
+" RSA. "
 
 #. module: certificate
 #. odoo-python
@@ -427,6 +441,9 @@ msgid ""
 "                When a public key is set this way, it will be used instead of the one in the certificate.\n"
 "             "
 msgstr ""
+"يُستخدم لتعيين مفتاح عام في حال كان المفتاح العام الموجود في الشهادة خطأً.\n"
+"                عند تعيين مفتاح عام بهذه الطريقة، سيتم استخدامه عوضاً عن المفتاح العام الموجود في الشهادة.\n"
+"             "
 
 #. module: certificate
 #: model:ir.model.fields,field_description:certificate.field_certificate_certificate__is_valid

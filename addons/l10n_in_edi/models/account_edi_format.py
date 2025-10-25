@@ -167,7 +167,7 @@ class AccountEdiFormat(models.Model):
                 return {invoice: {
                     "success": False,
                     "error": error_message,
-                    "blocking_level": ("404" in error_codes) and "warning" or "error",
+                    "blocking_level": "warning" if {'404', 'timeout'} & set(error_codes) else "error",
                 }}
         if not response.get("error"):
             json_dump = json.dumps(response.get("data"))
@@ -252,6 +252,11 @@ class AccountEdiFormat(models.Model):
             message.append(_("- State required min 3 and max 50 characters"))
         if partner.country_id.code == "IN" and not re.match("^([1-9][0-9]{5})$", partner.zip or ""):
             message.append(_("- ZIP code required 6 digits ranging from 100000 to 999999"))
+        if (
+            partner.country_id.code == "IN"
+            and not re.match(r"^(?!0+$)([0-9]{2})$", partner.state_id.l10n_in_tin or "")
+        ):
+            message.append(_("- State TIN Number must be exactly 2 digits."))
         if partner.phone and not re.match("^[0-9]{10,12}$",
             self._l10n_in_edi_extract_digits(partner.phone)
         ):
@@ -494,7 +499,15 @@ class AccountEdiFormat(models.Model):
                 "TaxSch": "GST",
                 "SupTyp": self._l10n_in_get_supply_type(invoice, tax_details_by_code),
                 "RegRev": tax_details_by_code.get("is_reverse_charge") and "Y" or "N",
-                "IgstOnIntra": is_intra_state and tax_details_by_code.get("igst_amount") and "Y" or "N"},
+                "IgstOnIntra": (
+                    # for Export SEZ LUT tax as per e-invoice api doc validation point 32
+                    # Export and SEZ must be treated as Inter state supply
+                    invoice.l10n_in_gst_treatment not in ('special_economic_zone', 'overseas')
+                    and is_intra_state
+                    and tax_details_by_code.get("igst_amount")
+                    and "Y" or "N"
+                ),
+            },
             "DocDtls": {
                 "Typ": (invoice.move_type == "out_refund" and "CRN") or (invoice.debit_origin_id and "DBN") or "INV",
                 "No": invoice.name,
@@ -507,7 +520,7 @@ class AccountEdiFormat(models.Model):
                 for index, line in enumerate(lines, start=1)
             ],
             "ValDtls": {
-                "AssVal": self._l10n_in_round_value(tax_details.get("base_amount") + global_discount_amount),
+                "AssVal": self._l10n_in_round_value(tax_details.get("base_amount")),
                 "CgstVal": self._l10n_in_round_value(tax_details_by_code.get("cgst_amount", 0.00)),
                 "SgstVal": self._l10n_in_round_value(tax_details_by_code.get("sgst_amount", 0.00)),
                 "IgstVal": self._l10n_in_round_value(tax_details_by_code.get("igst_amount", 0.00)),
@@ -523,7 +536,11 @@ class AccountEdiFormat(models.Model):
                 "RndOffAmt": self._l10n_in_round_value(
                     rounding_amount),
                 "TotInvVal": self._l10n_in_round_value(
-                    (tax_details.get("base_amount") + tax_details.get("tax_amount") + rounding_amount)),
+                    tax_details.get("base_amount")
+                    + tax_details.get("tax_amount")
+                    + rounding_amount
+                    - global_discount_amount
+                ),
             },
         }
         if invoice.company_currency_id != invoice.currency_id:
@@ -567,6 +584,10 @@ class AccountEdiFormat(models.Model):
         def l10n_in_grouping_key_generator(base_line, tax_data):
             invl = base_line['record']
             tax = tax_data['tax']
+            if move.l10n_in_gst_treatment in ('overseas', 'special_economic_zone') and all(
+                self.env.ref("l10n_in.tax_tag_igst") in rl.tag_ids for rl in tax.invoice_repartition_line_ids if rl.repartition_type == 'tax'
+            ):
+                tax_data['is_reverse_charge'] = False
             tags = tax.invoice_repartition_line_ids.tag_ids
             line_code = "other"
             if not invl.currency_id.is_zero(tax_data['tax_amount_currency']):
@@ -582,11 +603,9 @@ class AccountEdiFormat(models.Model):
                         line_code = "state_cess"
                 else:
                     for gst in ["cgst", "sgst", "igst"]:
-                        if any(tag in tags for tag in self.env.ref("l10n_in.tax_tag_%s"%(gst))):
-                            line_code = gst
-                        # need to separate rc tax value so it's not pass to other values
-                        if any(tag in tags for tag in self.env.ref("l10n_in.tax_tag_%s_rc" % (gst))):
-                            line_code = gst + '_rc'
+                        if any(tag in tags for tag in self.env.ref("l10n_in.tax_tag_%s" % (gst))):
+                            # need to separate rc tax value so it's not pass to other values
+                            line_code = f'{gst}_rc' if tax_data['is_reverse_charge'] else gst
             return {
                 "tax": tax,
                 "base_product_id": invl.product_id,

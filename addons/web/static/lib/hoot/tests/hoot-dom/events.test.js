@@ -1,18 +1,26 @@
 /** @odoo-module */
 
-import { after, describe, expect, getFixture, test } from "@odoo/hoot";
 import {
+    advanceTime,
+    after,
+    animationFrame,
     clear,
     click,
     dblclick,
+    describe,
     drag,
     edit,
+    expect,
     fill,
+    getFixture,
     hover,
     keyDown,
     keyUp,
     leave,
     middleClick,
+    mockFetch,
+    mockTouch,
+    mockUserAgent,
     on,
     pointerDown,
     pointerUp,
@@ -24,12 +32,12 @@ import {
     select,
     setInputFiles,
     setInputRange,
+    test,
     uncheck,
-} from "@odoo/hoot-dom";
-import { advanceTime, animationFrame, mockFetch, mockTouch, mockUserAgent } from "@odoo/hoot-mock";
+} from "@odoo/hoot";
 import { Component, xml } from "@odoo/owl";
 import { EventList } from "@web/../lib/hoot-dom/helpers/events";
-import { mountForTest, parseUrl, waitForIframes } from "../local_helpers";
+import { mountForTest, parseUrl } from "../local_helpers";
 
 /**
  * @param {Event} ev
@@ -336,6 +344,66 @@ describe(parseUrl(import.meta.url), () => {
         ]);
     });
 
+    test("click on element allowing or disallowing pointer events", async () => {
+        await mountForTest(/* xml */ `
+            <div class="container">
+                <button class="first" style="pointer-events: none">
+                    Not allowed
+                </button>
+                <div style="pointer-events: none">
+                    <button class="second" style="pointer-events: auto">
+                        Allowed
+                    </button>
+                </div>
+                <button class="third" style="pointer-events: none">
+                    Not allowed
+                </button>
+            </div>
+        `);
+
+        const container = queryOne(".container");
+        const interactiveButton = queryOne(".second");
+        let events;
+
+        // Elements affected by pointer-events: none -> doesn't work
+        events = await click(".first");
+        expect(events.get("click").target).toBe(container);
+        events = await click(".third");
+        expect(events.get("click").target).toBe(container);
+
+        // Allowed button -> does work
+        events = await click(interactiveButton);
+        expect(events.get("click").target).toBe(interactiveButton);
+        expect("button:interactive").toHaveCount(1);
+
+        container.style.pointerEvents = "none";
+        interactiveButton.style.pointerEvents = "none";
+
+        // Does not work anymore
+        events = await click(interactiveButton);
+        expect(events.get("click").target).toBe(container.parentElement);
+        expect("button:interactive").not.toHaveCount();
+    });
+
+    test("click on inert element", async () => {
+        await mountForTest(/* xml */ `
+            <div class="container">
+                <button class="btn">Button</button>
+                <iframe inert="" srcdoc="&lt;button&gt;iframe button&lt;/button&gt;" />
+            </div>
+        `);
+
+        let events = await click(".btn");
+        expect(events.get("click")).not.toBe(null);
+
+        queryOne`.btn`.setAttribute("inert", "");
+
+        events = await click(".btn");
+        expect(events.get("click").target).toBe(queryOne`.container`);
+
+        await expect(click(":iframe button")).rejects.toThrow();
+    });
+
     test("click on common parent", async () => {
         await mountForTest(/* xml */ `
             <main class="parent">
@@ -428,8 +496,6 @@ describe(parseUrl(import.meta.url), () => {
             <button>Click me</button>
             <iframe srcdoc="&lt;button&gt;iframe button&lt;/button&gt;" />
         `);
-
-        await waitForIframes();
 
         expect("button").toHaveCount(1);
         expect(":iframe button").toHaveCount(1);
@@ -712,11 +778,7 @@ describe(parseUrl(import.meta.url), () => {
 
         for (const event of dragEvents) {
             expect(event.dataTransfer).toBe(dataTransfer, {
-                message: (_, r) => [
-                    r`drag event`,
-                    event.type,
-                    r`should share the same dataTransfer object`,
-                ],
+                message: `drag event "${event.type}" should share the same dataTransfer object`,
             });
         }
     });
@@ -748,13 +810,14 @@ describe(parseUrl(import.meta.url), () => {
         expect(dataTransfer.items).toHaveLength(2);
         expect(dataTransfer.types).toEqual(["text/plain", "text/html"]);
 
+        dataTransfer.setData("custom-data", "yes");
+
+        expect(dataTransfer.items).toHaveLength(3);
+        expect(dataTransfer.types).toEqual(["text/plain", "text/html", "custom-data"]);
+
         for (const event of dragEvents) {
             expect(event.dataTransfer).toBe(dataTransfer, {
-                message: (_, r) => [
-                    r`drag event`,
-                    event.type,
-                    r`should share the same dataTransfer object`,
-                ],
+                message: `drag event "${event.type}" should share the same dataTransfer object`,
             });
         }
     });
@@ -1274,8 +1337,6 @@ describe(parseUrl(import.meta.url), () => {
             <iframe srcdoc="&lt;input type='text' /&gt;" />
         `);
 
-        await waitForIframes();
-
         expect("input").toHaveCount(1);
         expect(":iframe input").toHaveCount(1);
 
@@ -1762,10 +1823,11 @@ describe(parseUrl(import.meta.url), () => {
             </form>
         `);
 
-        mockFetch((url, { body, method }) => {
+        mockFetch((url, { body, headers, method }) => {
             expect.step(new URL(url).pathname);
 
-            expect(method).toBe("post");
+            expect(method).toBe("POST");
+            expect(headers).toEqual(new Headers([["Content-Type", "multipart/form-data"]]));
             expect(body).toBeInstanceOf(FormData);
             expect(body.get("csrf_token")).toBe("CSRF_TOKEN_VALUE");
             expect(body.get("name")).toBe("Pierre");

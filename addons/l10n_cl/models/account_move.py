@@ -131,7 +131,13 @@ class AccountMove(models.Model):
 
     def _get_name_invoice_report(self):
         self.ensure_one()
-        if self.l10n_latam_use_documents and self.company_id.account_fiscal_country_id.code == 'CL':
+        if (
+            self.l10n_latam_use_documents and self.company_id.account_fiscal_country_id.code == "CL"
+            and (
+                self.move_type in {"out_invoice", "out_refund"}
+                or self.l10n_latam_document_type_id.code == "46"
+            )
+        ):
             return 'l10n_cl.report_invoice_document'
         return super()._get_name_invoice_report()
 
@@ -232,7 +238,7 @@ class AccountMove(models.Model):
                     'tax_ids': gd.tax_ids,
                 }
             )
-        values['vat_percent'] = '%.2f%%' % vat_percent if vat_percent > 0 else False
+        values['vat_percent'] = '%.2f' % vat_percent if vat_percent > 0 else False
         return values
 
     def _l10n_cl_get_withholdings(self):

@@ -50,6 +50,8 @@ class MassMailing(models.Model):
     _rec_name = "subject"
     _systray_view = 'list'
 
+    _unrestricted_rendering = True
+
     @api.model
     def default_get(self, fields_list):
         vals = super(MassMailing, self).default_get(fields_list)
@@ -378,7 +380,8 @@ class MassMailing(models.Model):
 
     @api.depends('email_from', 'mail_server_id')
     def _compute_warning_message(self):
-        for mailing in self:
+        self.warning_message = False
+        for mailing in self.filtered(lambda mailing: mailing.mailing_type == "mail"):
             mail_server = mailing.mail_server_id
             if mail_server and not mail_server._match_from_filter(mailing.email_from, mail_server.from_filter):
                 mailing.warning_message = _(
@@ -664,12 +667,20 @@ class MassMailing(models.Model):
         self.write({'state': 'draft', 'schedule_date': False, 'schedule_type': 'now', 'next_departure': False})
 
     def action_retry_failed(self):
-        failed_mails = self.env['mail.mail'].sudo().search([
+        """ Remove all failed emails and their traces, and try sending them again."""
+        # Use batching to prevent cache overfill in unlink()
+        batch_size = 1000
+        failed_emails = self.env['mail.mail'].sudo().with_context(prefetch_fields=False).search([
             ('mailing_id', 'in', self.ids),
             ('state', '=', 'exception')
-        ])
-        failed_mails.mapped('mailing_trace_ids').unlink()
-        failed_mails.unlink()
+        ], limit=batch_size)
+        while failed_emails:
+            failed_emails.mapped('mailing_trace_ids').unlink()
+            failed_emails.unlink()
+            failed_emails = failed_emails.search([
+                ('mailing_id', 'in', self.ids),
+                ('state', '=', 'exception')
+            ], limit=batch_size)
         self.action_put_in_queue()
 
     def action_view_link_trackers(self):
@@ -1116,15 +1127,20 @@ class MassMailing(models.Model):
             ).create(composer_values)
 
             # auto-commit except in testing mode
-            composer._action_send_mail(
-                auto_commit=not getattr(threading.current_thread(), 'testing', False)
-            )
+            auto_commit = not getattr(threading.current_thread(), 'testing', False)
+            composer._action_send_mail(auto_commit=auto_commit)
+
             mailing.write({
                 'state': 'done',
                 'sent_date': fields.Datetime.now(),
                 # send the KPI mail only if it's the first sending
                 'kpi_mail_required': not mailing.sent_date,
             })
+
+            # ensure mailing state update after auto-commit
+            if auto_commit is True:
+                self.env.cr.commit()
+
         return True
 
     def convert_links(self):

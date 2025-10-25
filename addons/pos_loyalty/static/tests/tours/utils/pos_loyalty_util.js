@@ -111,11 +111,28 @@ export function customerIs(name) {
         },
     ];
 }
+export function isPointsDisplayed(isDisplayed) {
+    return [
+        {
+            trigger: isDisplayed
+                ? ".loyalty-points-title"
+                : "body:not(:has(.loyalty-points-title))",
+        },
+    ];
+}
 export function pointsAwardedAre(points_str) {
     return [
         {
             content: "loyalty points awarded " + points_str,
             trigger: '.loyalty-points-won:contains("' + points_str + '")',
+        },
+    ];
+}
+export function pointsTotalIs(points_str) {
+    return [
+        {
+            content: "loyalty points awarded " + points_str,
+            trigger: '.loyalty-points-totaltext-end:contains("' + points_str + '")',
         },
     ];
 }
@@ -169,6 +186,16 @@ export function createManualGiftCard(code, amount, date = false) {
         run: "click",
     });
     return steps;
+}
+
+export function clickGiftCardProgram(name) {
+    return [
+        {
+            content: `Click gift card program '${name}'`,
+            trigger: `button.selection-item:has(span:contains("${name}"))`,
+            run: "click",
+        },
+    ];
 }
 
 export function clickPhysicalGiftCard(code = "Sell physical gift card?") {

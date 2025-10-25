@@ -4,7 +4,7 @@
     'website': 'https://www.odoo.com/documentation/master/applications/finance/fiscal_localizations/mexico.html',
     'icon': '/account/static/description/l10n.png',
     'countries': ['mx'],
-    'version': '2.2',
+    'version': '2.3',
     'author': 'Vauxoo',
     'category': 'Accounting/Localizations/Account Charts',
     'description': """
@@ -43,6 +43,14 @@ With this module you will have:
     'demo': [
         'demo/demo_company.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'l10n_mx/static/src/helpers/*.js',
+        ],
+        'web.assets_frontend': [
+            'l10n_mx/static/src/helpers/*.js',
+        ],
+    },
     'license': 'LGPL-3',
     'post_init_hook': '_enable_group_uom_post_init',
 }

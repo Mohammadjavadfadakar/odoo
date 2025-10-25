@@ -5,6 +5,7 @@ from collections import defaultdict
 import werkzeug
 import werkzeug.exceptions
 from odoo import _, api, fields, models
+from odoo.fields import SQL
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools.image import image_data_uri
 
@@ -48,6 +49,7 @@ class ResPartnerBank(models.Model):
     )
     currency_id = fields.Many2one(tracking=True)
     lock_trust_fields = fields.Boolean(compute='_compute_lock_trust_fields')
+    duplicate_bank_partner_ids = fields.Many2many('res.partner', compute="_compute_duplicate_bank_partner_ids")
 
     @api.constrains('journal_id')
     def _check_journal_id(self):
@@ -62,6 +64,31 @@ class ResPartnerBank(models.Model):
             if bank.allow_out_payment:
                 if not self.env.user.has_group('account.group_validate_bank_account'):
                     raise ValidationError(_('You do not have the right to trust or un-trust a bank account.'))
+
+    @api.depends('acc_number')
+    def _compute_duplicate_bank_partner_ids(self):
+        id2duplicates = dict(self.env.execute_query(SQL(
+            """
+                SELECT this.id,
+                       ARRAY_AGG(other.partner_id)
+                  FROM res_partner_bank this
+             LEFT JOIN res_partner_bank other ON this.acc_number = other.acc_number
+                                             AND this.id != other.id
+                                             AND other.active = TRUE
+                 WHERE this.id = ANY(%(ids)s)
+                 AND other.partner_id IS NOT NULL
+                   AND this.active = TRUE
+                   AND (
+                        ((this.company_id = other.company_id) OR (this.company_id IS NULL AND other.company_id IS NULL))
+                        OR
+                        other.company_id IS NULL
+                        )
+              GROUP BY this.id
+            """,
+            ids=self.ids,
+        )))
+        for bank in self:
+            bank.duplicate_bank_partner_ids = self.env['res.partner'].browse(id2duplicates.get(bank._origin.id))
 
     @api.depends('partner_id.country_id', 'sanitized_acc_number', 'allow_out_payment', 'acc_type')
     def _compute_display_account_warning(self):
@@ -287,17 +314,25 @@ class ResPartnerBank(models.Model):
         # leaves them vulnerable to edits via the shell/... So we need to ensure that the user has the rights to edit
         # these fields when writing too.
         # While we do lock changes if the account is trusted, we still want to allow to change them if we go from not trusted -> trusted or from trusted -> not trusted.
-        any_trusted_accounts = any(account.lock_trust_fields for account in self)
-        if not any_trusted_accounts:
+        trusted_accounts = self.filtered(lambda x: x.lock_trust_fields)
+        if not trusted_accounts:
             should_allow_changes = True  # If we were on a non-trusted account, we will allow to change (setting/... one last time before trusting)
         else:
             # If we were on a trusted account, we only allow changes if the account is moving to untrusted.
             should_allow_changes = ('allow_out_payment' in vals and vals['allow_out_payment'] is False)
 
-        if ('acc_number' in vals or 'partner_id' in vals) and not should_allow_changes:
+        lock_fields = {'acc_number', 'sanitized_acc_number', 'partner_id', 'acc_type'}
+        if not should_allow_changes and any(
+            account[fname] != account._fields[fname].convert_to_record(
+                account._fields[fname].convert_to_cache(vals[fname], account),
+                account,
+            )
+            for fname in lock_fields & set(vals)
+            for account in trusted_accounts
+        ):
             raise UserError(_("You cannot modify the account number or partner of an account that has been trusted."))
 
-        if 'allow_out_payment' in vals and not self.env.user.has_group('account.group_validate_bank_account'):
+        if 'allow_out_payment' in vals and not self.env.user.has_group('account.group_validate_bank_account') and not self.env.su:
             raise UserError(_("You do not have the rights to trust or un-trust accounts."))
 
         res = super().write(vals)

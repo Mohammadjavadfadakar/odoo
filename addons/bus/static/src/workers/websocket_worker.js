@@ -50,6 +50,7 @@ const MAXIMUM_RECONNECT_DELAY = 60000;
 export class WebsocketWorker {
     INITIAL_RECONNECT_DELAY = 1000;
     RECONNECT_JITTER = 1000;
+    CONNECTION_CHECK_DELAY = 60_000;
 
     constructor() {
         // Timestamp of start of most recent bus service sender
@@ -243,7 +244,7 @@ export class WebsocketWorker {
         if (this.newestStartTs && this.newestStartTs > startTs) {
             this.debugModeByClient.set(client, debug);
             this.isDebug = [...this.debugModeByClient.values()].some(Boolean);
-            this.sendToClient(client, "update_state", this.state);
+            this.sendToClient(client, "worker_state_updated", this.state);
             this.sendToClient(client, "initialized");
             return;
         }
@@ -265,7 +266,7 @@ export class WebsocketWorker {
             }
             this.channelsByClient.forEach((_, key) => this.channelsByClient.set(key, []));
         }
-        this.sendToClient(client, "update_state", this.state);
+        this.sendToClient(client, "worker_state_updated", this.state);
         this.sendToClient(client, "initialized");
         if (!this.active) {
             this.sendToClient(client, "outdated");
@@ -314,6 +315,7 @@ export class WebsocketWorker {
      * closed.
      */
     _onWebsocketClose({ code, reason }) {
+        clearInterval(this._connectionCheckInterval);
         this._logDebug("_onWebsocketClose", code, reason);
         this._updateState(WORKER_STATE.DISCONNECTED);
         this.lastChannelSubscription = null;
@@ -361,6 +363,7 @@ export class WebsocketWorker {
      * @param {MessageEvent} messageEv
      */
     _onWebsocketMessage(messageEv) {
+        this._restartConnectionCheckInterval();
         const notifications = JSON.parse(messageEv.data);
         this._logDebug("_onWebsocketMessage", notifications);
         this.lastNotificationId = notifications[notifications.length - 1].id;
@@ -396,9 +399,32 @@ export class WebsocketWorker {
         this.connectTimeout = null;
         this.isReconnecting = false;
         this.firstSubscribeDeferred.then(() => {
+            if (!this.websocket) {
+                return;
+            }
             this.messageWaitQueue.forEach((msg) => this.websocket.send(msg));
             this.messageWaitQueue = [];
         });
+        this._restartConnectionCheckInterval();
+    }
+
+    /**
+     * Sends a custom application-level message to perform a connection check
+     * on the WebSocket.
+     *
+     * Browsers rely on the OS's TCP mechanism, which can take minutes or
+     * hours to detect a dead connection. Sending data triggers an immediate
+     * I/O operation, quickly revealing any network-level failure. This must be
+     * implemented at the application level because the browser WebSocket API
+     * does not expose the built-in ping/pong mechanism.
+     */
+    _restartConnectionCheckInterval() {
+        clearInterval(this._connectionCheckInterval);
+        this._connectionCheckInterval = setInterval(() => {
+            if (this._isWebsocketConnected()) {
+                this.websocket.send(new Uint8Array([0x00]));
+            }
+        }, this.CONNECTION_CHECK_DELAY);
     }
 
     /**
@@ -438,6 +464,7 @@ export class WebsocketWorker {
             } else {
                 this.firstSubscribeDeferred.then(() => this.websocket.send(payload));
             }
+            this._restartConnectionCheckInterval();
         }
     }
 
@@ -480,8 +507,14 @@ export class WebsocketWorker {
         this.connectRetryDelay = this.INITIAL_RECONNECT_DELAY;
         this.isReconnecting = false;
         this.lastChannelSubscription = null;
+        const shouldBroadcastClose =
+            this.websocket && this.websocket.readyState !== WebSocket.CLOSED;
         this.websocket?.close();
         this._removeWebsocketListeners();
+        this.websocket = null;
+        if (shouldBroadcastClose) {
+            this.broadcast("disconnect", { code: WEBSOCKET_CLOSE_CODES.CLEAN });
+        }
     }
 
     /**

@@ -1,5 +1,9 @@
-import { after, afterEach } from "@odoo/hoot";
 import {
+    advanceFrame,
+    advanceTime,
+    after,
+    afterEach,
+    animationFrame,
     check,
     clear,
     click,
@@ -19,20 +23,19 @@ import {
     select,
     uncheck,
     waitFor,
-} from "@odoo/hoot-dom";
-import { advanceFrame, advanceTime, animationFrame } from "@odoo/hoot-mock";
+} from "@odoo/hoot";
 import { hasTouch } from "@web/core/browser/feature_detection";
 
 /**
- * @typedef {import("@odoo/hoot-dom").DragHelpers} DragHelpers
- * @typedef {import("@odoo/hoot-dom").DragOptions} DragOptions
- * @typedef {import("@odoo/hoot-dom").FillOptions} FillOptions
- * @typedef {import("@odoo/hoot-dom").InputValue} InputValue
- * @typedef {import("@odoo/hoot-dom").KeyStrokes} KeyStrokes
- * @typedef {import("@odoo/hoot-dom").PointerOptions} PointerOptions
- * @typedef {import("@odoo/hoot-dom").Position} Position
- * @typedef {import("@odoo/hoot-dom").QueryOptions} QueryOptions
- * @typedef {import("@odoo/hoot-dom").Target} Target
+ * @typedef {import("@odoo/hoot").DragHelpers} DragHelpers
+ * @typedef {import("@odoo/hoot").DragOptions} DragOptions
+ * @typedef {import("@odoo/hoot").FillOptions} FillOptions
+ * @typedef {import("@odoo/hoot").InputValue} InputValue
+ * @typedef {import("@odoo/hoot").KeyStrokes} KeyStrokes
+ * @typedef {import("@odoo/hoot").PointerOptions} PointerOptions
+ * @typedef {import("@odoo/hoot").Position} Position
+ * @typedef {import("@odoo/hoot").QueryOptions} QueryOptions
+ * @typedef {import("@odoo/hoot").Target} Target
  *
  * @typedef {DragOptions & {
  *  initialPointerMoveDistance?: number;
@@ -49,7 +52,7 @@ import { hasTouch } from "@web/core/browser/feature_detection";
 
 /**
  * @template T
- * @typedef {import("@odoo/hoot-dom").MaybePromise<T>} MaybePromise
+ * @typedef {T | PromiseLike<T>} MaybePromise
  */
 
 /**
@@ -321,7 +324,8 @@ export function contains(target, options) {
          */
         scroll: async (position) => {
             consumeContains();
-            await scroll(nodePromise, position);
+            // disable "scrollable" check
+            await scroll(nodePromise, position, { scrollable: false, ...options });
             await animationFrame();
         },
         /**
