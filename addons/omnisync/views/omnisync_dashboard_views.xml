@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_omnisync_dashboard_form" model="ir.ui.view">
+        <field name="name">omnisync.dashboard.form</field>
+        <field name="model">omnisync.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="OmniSync Dashboard">
+                <sheet>
+                    <group col="6">
+                        <field name="success_count" widget="statinfo" string="Successful Jobs"/>
+                        <field name="failure_count" widget="statinfo" string="Failed Jobs" options="{'clickable': True}"/>
+                        <field name="avg_duration" widget="statinfo" string="Average Duration (s)"/>
+                        <field name="conflict_count" widget="statinfo" string="Pending Conflicts"/>
+                        <field name="awaiting_approval" widget="statinfo" string="Awaiting Approval"/>
+                        <field name="binding_failed_count" widget="statinfo" string="Failed Bindings"/>
+                        <field name="validation_block_count" widget="statinfo" string="Open Validation Blocks"/>
+                        <field name="health_failure_count" widget="statinfo" string="Critical Health Failures"/>
+                        <field name="runbook_queue_count" widget="statinfo" string="Runbooks In Progress"/>
+                    </group>
+                    <group>
+                        <field name="last_jobs" widget="json" string="Recent Jobs" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_omnisync_dashboard_kanban" model="ir.ui.view">
+        <field name="name">omnisync.dashboard.kanban</field>
+        <field name="model">omnisync.dashboard</field>
+        <field name="arch" type="xml">
+            <kanban create="0" quick_create="0">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card">
+                            <div class="o_kanban_primary_right">
+                                <div class="o_stat_value">Success: <span t-esc="record.success_count.value"/></div>
+                                <div class="o_stat_value">Failure: <span t-esc="record.failure_count.value"/></div>
+                                <div class="o_stat_value">Avg Duration: <span t-esc="record.avg_duration.value"/> s</div>
+                                <div class="o_stat_value">Conflicts: <span t-esc="record.conflict_count.value"/></div>
+                                <div class="o_stat_value">Awaiting Approval: <span t-esc="record.awaiting_approval.value"/></div>
+                                <div class="o_stat_value">Failed Bindings: <span t-esc="record.binding_failed_count.value"/></div>
+                                <div class="o_stat_value">Validation Blocks: <span t-esc="record.validation_block_count.value"/></div>
+                                <div class="o_stat_value">Health Failures: <span t-esc="record.health_failure_count.value"/></div>
+                                <div class="o_stat_value">Runbooks In Progress: <span t-esc="record.runbook_queue_count.value"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_omnisync_dashboard" model="ir.actions.act_window">
+        <field name="name">OmniSync Dashboard</field>
+        <field name="res_model">omnisync.dashboard</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="target">main</field>
+        <field name="context">{'default_success_count': 0}</field>
+    </record>
+</odoo>

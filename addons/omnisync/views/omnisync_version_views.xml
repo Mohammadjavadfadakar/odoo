@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_omnisync_version_tree" model="ir.ui.view">
+        <field name="name">omnisync.flow.version.tree</field>
+        <field name="model">omnisync.flow.version</field>
+        <field name="arch" type="xml">
+            <tree string="Flow Versions" default_order="create_date desc">
+                <field name="name"/>
+                <field name="flow_id"/>
+                <field name="state" widget="badge"/>
+                <field name="approved_by"/>
+                <field name="approved_on"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_omnisync_version_form" model="ir.ui.view">
+        <field name="name">omnisync.flow.version.form</field>
+        <field name="model">omnisync.flow.version</field>
+        <field name="arch" type="xml">
+            <form string="Flow Version">
+                <header>
+                    <button name="action_submit" string="Submit" type="object" attrs="{'invisible':[('state','!=','draft')] }"/>
+                    <button name="action_approve" string="Approve" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','awaiting')]}"/>
+                    <button name="action_reject" string="Reject" type="object" attrs="{'invisible':[('state','!=','awaiting')]}"/>
+                    <button name="action_rollback" string="Rollback" type="object" attrs="{'invisible':[('state','!=','approved')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,awaiting,approved,rejected"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="flow_id" readonly="1"/>
+                        <field name="change_note" placeholder="Describe the change"/>
+                    </group>
+                    <group>
+                        <field name="approved_by" readonly="1"/>
+                        <field name="approved_on" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="data_blob" widget="text" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_version" model="ir.actions.act_window">
+        <field name="name">Flow Versions</field>
+        <field name="res_model">omnisync.flow.version</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
