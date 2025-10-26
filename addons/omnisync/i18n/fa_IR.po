@@ -1,0 +1,112 @@
+msgid ""
+msgstr ""
+
+#: addons/omnisync
+msgid "Health Checks"
+msgstr ""
+
+#: addons/omnisync
+msgid "Runbooks"
+msgstr ""
+
+#: addons/omnisync
+msgid "Critical Health Failures"
+msgstr ""
+
+#: addons/omnisync
+msgid "Runbooks In Progress"
+msgstr ""
+
+#: addons/omnisync
+msgid "Connector Reachability"
+msgstr ""
+
+#: addons/omnisync
+msgid "Flow Preview"
+msgstr ""
+
+#: addons/omnisync
+msgid "Mapping Coverage"
+msgstr ""
+
+#: addons/omnisync
+msgid "Health Check"
+msgstr ""
+
+#: addons/omnisync
+msgid "Runbook"
+msgstr ""
+"Project-Id-Version: OmniSync 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: Auto Generated\n"
+"Language-Team: Persian\n"
+"Language: fa_IR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: addons/omnisync
+msgid "OmniSync"
+msgstr "اومنی‌سینک"
+
+#: addons/omnisync
+msgid "Validation Rules"
+msgstr "قوانین اعتبارسنجی"
+
+#: addons/omnisync
+msgid "Escalation Policies"
+msgstr "خط‌مشی‌های تصعید"
+
+#: addons/omnisync
+msgid "Validation Logs"
+msgstr "لاگ‌های اعتبارسنجی"
+
+#: addons/omnisync
+msgid "Validation Failure Streak"
+msgstr "رشته خطای اعتبارسنجی"
+
+#: addons/omnisync
+msgid "Open Validation Blocks"
+msgstr "مسدودی‌های اعتبارسنجی باز"
+
+#: addons/omnisync
+msgid "Validation Blocks"
+msgstr "مسدودی‌های اعتبارسنجی"
+
+#: addons/omnisync
+msgid "Validation Rule"
+msgstr "قانون اعتبارسنجی"
+
+#: addons/omnisync
+msgid "Validation Log"
+msgstr "لاگ اعتبارسنجی"
+
+#: addons/omnisync
+msgid "Escalation Policy"
+msgstr "خط‌مشی تصعید"
+
+#: addons/omnisync
+msgid "Unhandled"
+msgstr "رسیدگی‌نشده"
+
+#: addons/omnisync
+msgid "Blocking"
+msgstr "مسدودکننده"
+
+#: addons/omnisync
+msgid "Warnings"
+msgstr "هشدارها"
+
+#: addons/omnisync
+msgid "Mark Handled"
+msgstr "علامت‌گذاری به‌عنوان رسیدگی‌شده"
+
+#: addons/omnisync
+msgid "Search Validation Logs"
+msgstr "جستجوی لاگ‌های اعتبارسنجی"
+
+#: addons/omnisync
+msgid "Validation rule %(name)s failed to evaluate: %(error)s"
+msgstr "قانون اعتبارسنجی %(name)s در ارزیابی خطا داد: %(error)s"

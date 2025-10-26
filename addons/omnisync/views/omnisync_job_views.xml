@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_omnisync_job_tree" model="ir.ui.view">
+        <field name="name">omnisync.job.log.tree</field>
+        <field name="model">omnisync.job.log</field>
+        <field name="arch" type="xml">
+            <tree string="Job Logs" decoration-danger="status == 'failed'" decoration-success="status == 'success'">
+                <field name="name"/>
+                <field name="flow_id"/>
+                <field name="status" widget="badge"/>
+                <field name="records_processed"/>
+                <field name="duration"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_omnisync_job_form" model="ir.ui.view">
+        <field name="name">omnisync.job.log.form</field>
+        <field name="model">omnisync.job.log</field>
+        <field name="arch" type="xml">
+            <form string="Job Log">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="flow_id"/>
+                        <field name="status" widget="statusbar" statusbar_visible="pending,success,failed"/>
+                        <field name="duration"/>
+                        <field name="latency"/>
+                        <field name="records_processed"/>
+                        <field name="payload_preview" widget="text"/>
+                        <field name="error_message" widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_job_log" model="ir.actions.act_window">
+        <field name="name">Job Logs</field>
+        <field name="res_model">omnisync.job.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_group_by_flow_id': 1}</field>
+    </record>
+</odoo>

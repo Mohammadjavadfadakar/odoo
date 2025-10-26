@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="group_omnisync_admin" model="res.groups">
+            <field name="name">OmniSync Administrator</field>
+            <field name="category_id" ref="base.module_category_administration"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+        <record id="group_omnisync_dashboard" model="res.groups">
+            <field name="name">OmniSync Dashboard User</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
+        <record id="omnisync_rule_company" model="ir.rule">
+            <field name="name">OmniSync multi-company isolation</field>
+            <field name="model_id" ref="model_omnisync_flow"/>
+            <field name="groups" eval="[(4, ref('group_omnisync_admin')), (4, ref('group_omnisync_dashboard'))]"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="omnisync_rule_company_system" model="ir.rule">
+            <field name="name">OmniSync system company isolation</field>
+            <field name="model_id" ref="model_omnisync_system"/>
+            <field name="groups" eval="[(4, ref('group_omnisync_admin')), (4, ref('group_omnisync_dashboard'))]"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="omnisync_rule_company_mapping" model="ir.rule">
+            <field name="name">OmniSync mapping company isolation</field>
+            <field name="model_id" ref="model_omnisync_mapping"/>
+            <field name="groups" eval="[(4, ref('group_omnisync_admin'))]"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="omnisync_rule_company_job" model="ir.rule">
+            <field name="name">OmniSync job company isolation</field>
+            <field name="model_id" ref="model_omnisync_job_log"/>
+            <field name="groups" eval="[(4, ref('group_omnisync_admin')), (4, ref('group_omnisync_dashboard'))]"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+        </record>
+
+        <record id="omnisync_rule_company_binding" model="ir.rule">
+            <field name="name">OmniSync binding company isolation</field>
+            <field name="model_id" ref="model_omnisync_binding"/>
+            <field name="groups" eval="[(4, ref('group_omnisync_admin')), (4, ref('group_omnisync_dashboard'))]"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]</field>
+        </record>
+    </data>
+</odoo>
