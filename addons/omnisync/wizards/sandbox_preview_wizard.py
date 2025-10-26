@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Sandbox preview wizard."""
 
-from odoo import fields, models
+from odoo import api, fields, models
+
+from ..tools import format_json_value
 
 
 class OmniSyncSandboxPreviewWizard(models.TransientModel):
@@ -12,6 +14,11 @@ class OmniSyncSandboxPreviewWizard(models.TransientModel):
 
     flow_id = fields.Many2one("omnisync.flow", required=True)
     preview_payload = fields.Json(readonly=True)
+    preview_payload_text = fields.Text(
+        string="Preview Payload (JSON)",
+        compute="_compute_preview_payload_text",
+        readonly=True,
+    )
 
     def action_preview(self):
         """Run the flow in preview mode and refresh the wizard."""
@@ -25,3 +32,8 @@ class OmniSyncSandboxPreviewWizard(models.TransientModel):
             "view_mode": "form",
             "target": "new",
         }
+
+    @api.depends("preview_payload")
+    def _compute_preview_payload_text(self):
+        for wizard in self:
+            wizard.preview_payload_text = format_json_value(wizard.preview_payload)

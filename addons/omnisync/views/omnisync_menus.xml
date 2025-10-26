@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_omnisync_root" name="OmniSync" sequence="10" parent="base.menu_custom" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+    <menuitem id="menu_omnisync_root"
+        name="OmniSync"
+        sequence="30"
+        web_icon="omnisync,static/description/icon.svg"
+        groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
     <menuitem id="menu_omnisync_configuration" name="Configuration" parent="menu_omnisync_root" sequence="10" groups="omnisync.group_omnisync_admin"/>
     <menuitem id="menu_omnisync_operations" name="Operations" parent="menu_omnisync_root" sequence="20" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
     <menuitem id="menu_omnisync_dashboard" name="Dashboard" parent="menu_omnisync_operations" action="action_omnisync_dashboard" sequence="10" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>

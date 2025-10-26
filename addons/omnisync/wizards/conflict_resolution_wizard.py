@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """Conflict resolution wizard."""
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
+
+from ..tools import format_json_value
 
 
 class OmniSyncConflictResolutionWizard(models.TransientModel):
@@ -21,6 +23,11 @@ class OmniSyncConflictResolutionWizard(models.TransientModel):
         default="remote",
     )
     preview = fields.Json(related="conflict_id.differences_json", readonly=True)
+    preview_text = fields.Text(
+        string="Differences (JSON)",
+        compute="_compute_preview_text",
+        readonly=True,
+    )
 
     def action_resolve(self):
         """Apply the chosen resolution to the conflict."""
@@ -33,3 +40,8 @@ class OmniSyncConflictResolutionWizard(models.TransientModel):
         else:
             conflict.action_dismiss()
         return {"type": "ir.actions.act_window_close"}
+
+    @api.depends("preview")
+    def _compute_preview_text(self):
+        for wizard in self:
+            wizard.preview_text = format_json_value(wizard.preview)

@@ -3,6 +3,8 @@
 
 from odoo import _, fields, models
 
+from ..tools import format_json_value
+
 
 class OmniSyncConflict(models.Model):
     """Store detected conflicts between remote payloads and Odoo records."""
@@ -40,6 +42,21 @@ class OmniSyncConflict(models.Model):
     external_payload = fields.Json(string="Remote Payload", readonly=True)
     candidate_values = fields.Json(string="Mapped Values", readonly=True)
     differences_json = fields.Json(string="Differences", readonly=True)
+    external_payload_display = fields.Text(
+        string="Remote Payload (JSON)",
+        compute="_compute_display_payloads",
+        readonly=True,
+    )
+    candidate_values_display = fields.Text(
+        string="Mapped Values (JSON)",
+        compute="_compute_display_payloads",
+        readonly=True,
+    )
+    differences_display = fields.Text(
+        string="Differences (JSON)",
+        compute="_compute_display_payloads",
+        readonly=True,
+    )
     resolved_by = fields.Many2one("res.users", readonly=True)
     resolved_on = fields.Datetime(readonly=True)
     company_id = fields.Many2one(
@@ -103,3 +120,9 @@ class OmniSyncConflict(models.Model):
             "Conflict %(name)s resolved with decision: %(resolution)s"
         ) % {"name": self.name, "resolution": resolution}
         self.flow_id.message_post(body=body)
+
+    def _compute_display_payloads(self):
+        for record in self:
+            record.external_payload_display = format_json_value(record.external_payload)
+            record.candidate_values_display = format_json_value(record.candidate_values)
+            record.differences_display = format_json_value(record.differences_json)
