@@ -9,8 +9,8 @@ from typing import Any, Dict, List, Optional
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from ..tools import queue_job
 
+from ..tools import DEFAULT_QUEUE_CHANNEL
 from .system import ConnectorResponse
 
 _logger = logging.getLogger(__name__)
@@ -67,7 +67,7 @@ class OmniSyncFlow(models.Model):
         [("idle", "Idle"), ("success", "Success"), ("failed", "Failed")],
         default="idle",
     )
-    queue_channel = fields.Char(default="root.omnisync")
+    queue_channel = fields.Char(default=DEFAULT_QUEUE_CHANNEL)
     sandbox_mode = fields.Boolean(
         related="system_id.sandbox_mode",
         readonly=True,
@@ -176,10 +176,11 @@ class OmniSyncFlow(models.Model):
     def action_sync_now(self):
         """Queue an immediate synchronization job."""
         for flow in self:
-            flow.with_delay(channel=flow.queue_channel or "root.omnisync")._execute_sync()
+            flow.with_delay(
+                channel=flow.queue_channel or DEFAULT_QUEUE_CHANNEL
+            )._execute_sync()
         return True
 
-    @queue_job(default_channel="root.omnisync")
     def _execute_sync(self, checkpoint: Dict[str, Any] | None = None):
         """Queue job that runs the synchronization."""
         self.ensure_one()

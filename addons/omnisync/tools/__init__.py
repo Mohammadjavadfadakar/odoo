@@ -1,5 +1,5 @@
 """Utility helpers for OmniSync."""
 
-from .queue import queue_job
+DEFAULT_QUEUE_CHANNEL = "root.omnisync"
 
-__all__ = ["queue_job"]
+__all__ = ["DEFAULT_QUEUE_CHANNEL"]

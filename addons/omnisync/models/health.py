@@ -7,8 +7,8 @@ from typing import Tuple
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from ..tools import queue_job
 
+from ..tools import DEFAULT_QUEUE_CHANNEL
 from .system import ConnectorResponse
 
 _logger = logging.getLogger(__name__)
@@ -96,10 +96,9 @@ class OmniSyncHealthCheck(models.Model):
     def action_run(self):
         """Queue all selected checks for immediate execution."""
         for check in self:
-            check.with_delay(channel="root.omnisync")._run_health_check()
+            check.with_delay(channel=DEFAULT_QUEUE_CHANNEL)._run_health_check()
         return True
 
-    @queue_job(default_channel="root.omnisync")
     def _run_health_check(self):
         """Execute the health check asynchronously."""
         self.ensure_one()
