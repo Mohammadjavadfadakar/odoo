@@ -10,18 +10,18 @@ from typing import Any, Dict, List, Optional
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-from ..tools import DEFAULT_QUEUE_CHANNEL
+from ..tools import DEFAULT_QUEUE_CHANNEL, QueueJobMixin
 from .system import ConnectorResponse
 
 _logger = logging.getLogger(__name__)
 
 
-class OmniSyncFlow(models.Model):
+class OmniSyncFlow(models.Model, QueueJobMixin):
     """Represents a synchronization flow between Odoo and an external system."""
 
     _name = "omnisync.flow"
     _description = "OmniSync Flow"
-    _inherit = ["mail.thread", "mail.activity.mixin", "queue.job.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(required=True, tracking=True)
     active = fields.Boolean(default=True)

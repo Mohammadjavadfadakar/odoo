@@ -8,18 +8,18 @@ from typing import Tuple
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-from ..tools import DEFAULT_QUEUE_CHANNEL
+from ..tools import DEFAULT_QUEUE_CHANNEL, QueueJobMixin
 from .system import ConnectorResponse
 
 _logger = logging.getLogger(__name__)
 
 
-class OmniSyncHealthCheck(models.Model):
+class OmniSyncHealthCheck(models.Model, QueueJobMixin):
     """Defines automated health checks for systems and flows."""
 
     _name = "omnisync.health.check"
     _description = "OmniSync Health Check"
-    _inherit = ["mail.thread", "mail.activity.mixin", "queue.job.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(required=True, tracking=True)
     active = fields.Boolean(default=True)
