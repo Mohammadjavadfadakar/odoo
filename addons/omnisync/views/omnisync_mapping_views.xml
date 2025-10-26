@@ -4,12 +4,12 @@
         <field name="name">omnisync.mapping.tree</field>
         <field name="model">omnisync.mapping</field>
         <field name="arch" type="xml">
-            <tree string="Mappings">
+            <list string="Mappings">
                 <field name="name"/>
                 <field name="flow_id"/>
                 <field name="target_model_id"/>
                 <field name="mode"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -33,7 +33,7 @@
                     <notebook>
                         <page string="Lines">
                             <field name="line_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="sequence"/>
                                     <field name="source_field"/>
                                     <field name="target_field_name"/>
@@ -41,11 +41,16 @@
                                     <field name="default_value"/>
                                     <field name="transform_chain"/>
                                     <field name="relation_resolution"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
@@ -53,6 +58,6 @@
     <record id="action_omnisync_mapping" model="ir.actions.act_window">
         <field name="name">Mappings</field>
         <field name="res_model">omnisync.mapping</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>

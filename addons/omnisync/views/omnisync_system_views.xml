@@ -4,13 +4,13 @@
         <field name="name">omnisync.system.tree</field>
         <field name="model">omnisync.system</field>
         <field name="arch" type="xml">
-            <tree string="Systems">
+            <list string="Systems">
                 <field name="name"/>
                 <field name="connector_type"/>
                 <field name="base_url"/>
                 <field name="company_id"/>
                 <field name="last_sync_status" widget="badge"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -21,7 +21,7 @@
             <form string="Integration System">
                 <header>
                     <button name="action_test_connection" type="object" string="Test Connection" class="oe_highlight" groups="omnisync.group_omnisync_admin"/>
-                    <field name="active" widget="statusbar"/>
+                    <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
                     <group>
@@ -62,18 +62,20 @@
                         </page>
                         <page string="Flows">
                             <field name="flow_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="name"/>
                                     <field name="direction"/>
                                     <field name="schedule_mode"/>
-                                </tree>
+                                </list>
                             </field>
-                        </page>
-                        <page string="Chatter">
-                            <field name="message_ids" widget="mail_thread" readonly="1"/>
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
@@ -81,6 +83,6 @@
     <record id="action_omnisync_system" model="ir.actions.act_window">
         <field name="name">Systems</field>
         <field name="res_model">omnisync.system</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>

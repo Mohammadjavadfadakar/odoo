@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_omnisync_auth_tree" model="ir.ui.view">
-        <field name="name">omnisync.auth.profile.tree</field>
+    <record id="view_omnisync_auth_list" model="ir.ui.view">
+        <field name="name">omnisync.auth.profile.list</field>
         <field name="model">omnisync.auth.profile</field>
         <field name="arch" type="xml">
-            <tree string="Auth Profiles">
+            <list string="Auth Profiles">
                 <field name="name"/>
                 <field name="auth_type"/>
                 <field name="company_id"/>
                 <field name="last_sync_status" widget="badge" options="{'bar': True}"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -20,7 +20,7 @@
             <form string="Auth Profile">
                 <header>
                     <button name="action_test_authentication" type="object" class="oe_highlight" string="Test" groups="omnisync.group_omnisync_admin"/>
-                    <field name="active" widget="statusbar"/>
+                    <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
                     <group>
@@ -28,9 +28,9 @@
                             <field name="name"/>
                             <field name="company_id"/>
                             <field name="auth_type"/>
-                            <field name="token_endpoint" attrs="{'invisible':[('auth_type','=','api_key')]}"/>
-                            <field name="client_id" attrs="{'invisible':[('auth_type','=','api_key')]}"/>
-                            <field name="client_secret_masked" readonly="1" attrs="{'invisible':[('auth_type','=','api_key')]}"/>
+                            <field name="token_endpoint" attrs="{'invisible': [('auth_type', '=', 'api_key')]}"/>
+                            <field name="client_id" attrs="{'invisible': [('auth_type', '=', 'api_key')]}"/>
+                            <field name="client_secret_masked" readonly="1" attrs="{'invisible': [('auth_type', '=', 'api_key')]}"/>
                         </group>
                         <group>
                             <field name="description" colspan="2"/>
@@ -39,14 +39,15 @@
                     </group>
                     <notebook>
                         <page string="Payload">
-                            <field name="auth_payload" placeholder="{""api_key"": ""***""}"/>
-                        </page>
-                        <page string="Chatter">
-                            <field name="message_follower_ids" widget="many2many_tags" readonly="1"/>
-                            <field name="message_ids" widget="mail_thread" readonly="1"/>
+                            <field name="auth_payload" placeholder="{'api_key': '***'}"/>
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
@@ -54,7 +55,7 @@
     <record id="action_omnisync_auth" model="ir.actions.act_window">
         <field name="name">Auth Profiles</field>
         <field name="res_model">omnisync.auth.profile</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{}</field>
     </record>
 </odoo>

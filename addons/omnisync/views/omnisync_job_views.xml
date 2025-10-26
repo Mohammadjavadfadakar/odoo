@@ -4,14 +4,14 @@
         <field name="name">omnisync.job.log.tree</field>
         <field name="model">omnisync.job.log</field>
         <field name="arch" type="xml">
-            <tree string="Job Logs" decoration-danger="status == 'failed'" decoration-success="status == 'success'">
+            <list string="Job Logs" decoration-danger="status == 'failed'" decoration-success="status == 'success'">
                 <field name="name"/>
                 <field name="flow_id"/>
                 <field name="status" widget="badge"/>
                 <field name="records_processed"/>
                 <field name="duration"/>
                 <field name="create_date"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -39,7 +39,7 @@
     <record id="action_omnisync_job_log" model="ir.actions.act_window">
         <field name="name">Job Logs</field>
         <field name="res_model">omnisync.job.log</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{'search_default_group_by_flow_id': 1}</field>
     </record>
 </odoo>

@@ -145,7 +145,7 @@ class OmniSyncFlow(models.Model):
     alert_partner_ids = fields.Many2many(
         "res.partner",
         string="Alert Recipients",
-        domain=[("share", "=", False)],
+        domain=[("user_ids", "!=", False)],
         help="Partners notified when the failure threshold is exceeded.",
     )
     pending_conflict_count = fields.Integer(

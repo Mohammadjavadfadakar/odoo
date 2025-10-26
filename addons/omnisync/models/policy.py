@@ -57,7 +57,7 @@ class OmniSyncEscalationPolicy(models.Model):
     partner_ids = fields.Many2many(
         "res.partner",
         string="Notification Recipients",
-        domain=[("share", "=", False)],
+        domain=[("user_ids", "!=", False)],
     )
     activity_type_id = fields.Many2one("mail.activity.type")
     activity_summary = fields.Char()

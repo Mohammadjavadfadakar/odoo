@@ -4,13 +4,13 @@
         <field name="name">omnisync.flow.version.tree</field>
         <field name="model">omnisync.flow.version</field>
         <field name="arch" type="xml">
-            <tree string="Flow Versions" default_order="create_date desc">
+            <list string="Flow Versions" default_order="create_date desc">
                 <field name="name"/>
                 <field name="flow_id"/>
                 <field name="state" widget="badge"/>
                 <field name="approved_by"/>
                 <field name="approved_on"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -47,6 +47,6 @@
     <record id="action_omnisync_version" model="ir.actions.act_window">
         <field name="name">Flow Versions</field>
         <field name="res_model">omnisync.flow.version</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>

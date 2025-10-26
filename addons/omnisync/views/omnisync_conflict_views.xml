@@ -4,14 +4,14 @@
         <field name="name">omnisync.conflict.tree</field>
         <field name="model">omnisync.conflict</field>
         <field name="arch" type="xml">
-            <tree string="Conflicts" default_order="create_date desc">
+            <list string="Conflicts" default_order="create_date desc">
                 <field name="name"/>
                 <field name="flow_id"/>
                 <field name="model_name"/>
                 <field name="state" widget="badge"/>
                 <field name="resolution"/>
                 <field name="create_date"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -57,7 +57,7 @@
     <record id="action_omnisync_conflict_tree" model="ir.actions.act_window">
         <field name="name">Conflicts</field>
         <field name="res_model">omnisync.conflict</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="context">{"search_default_pending":1}</field>
     </record>
 
@@ -73,39 +73,39 @@
         <field name="name">omnisync.queue.message.tree</field>
         <field name="model">omnisync.queue.message</field>
         <field name="arch" type="xml">
-            <tree string="Queue Messages" default_order="create_date desc">
+            <list string="Queue Messages" default_order="create_date desc">
                 <field name="name"/>
                 <field name="system_id"/>
                 <field name="topic"/>
                 <field name="state" widget="badge"/>
                 <field name="create_date"/>
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="action_omnisync_queue_messages" model="ir.actions.act_window">
         <field name="name">Queue Buffer</field>
         <field name="res_model">omnisync.queue.message</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
     </record>
 
     <record id="view_omnisync_webhook_tree" model="ir.ui.view">
         <field name="name">omnisync.webhook.event.tree</field>
         <field name="model">omnisync.webhook.event</field>
         <field name="arch" type="xml">
-            <tree string="Webhook Events" default_order="create_date desc">
+            <list string="Webhook Events" default_order="create_date desc">
                 <field name="name"/>
                 <field name="system_id"/>
                 <field name="event_code"/>
                 <field name="state" widget="badge"/>
                 <field name="create_date"/>
-            </tree>
+            </list>
         </field>
     </record>
 
     <record id="action_omnisync_webhook_events" model="ir.actions.act_window">
         <field name="name">Webhook Events</field>
         <field name="res_model">omnisync.webhook.event</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
     </record>
 </odoo>
