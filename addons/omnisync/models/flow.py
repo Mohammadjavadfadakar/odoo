@@ -10,13 +10,13 @@ from typing import Any, Dict, List, Optional
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-from ..tools import DEFAULT_QUEUE_CHANNEL, QueueJobMixin
+from ..tools import DEFAULT_QUEUE_CHANNEL
 from .system import ConnectorResponse
 
 _logger = logging.getLogger(__name__)
 
 
-class OmniSyncFlow(models.Model, QueueJobMixin):
+class OmniSyncFlow(models.Model):
     """Represents a synchronization flow between Odoo and an external system."""
 
     _name = "omnisync.flow"

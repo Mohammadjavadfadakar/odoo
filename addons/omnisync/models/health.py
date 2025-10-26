@@ -8,13 +8,13 @@ from typing import Tuple
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
-from ..tools import DEFAULT_QUEUE_CHANNEL, QueueJobMixin
+from ..tools import DEFAULT_QUEUE_CHANNEL
 from .system import ConnectorResponse
 
 _logger = logging.getLogger(__name__)
 
 
-class OmniSyncHealthCheck(models.Model, QueueJobMixin):
+class OmniSyncHealthCheck(models.Model):
     """Defines automated health checks for systems and flows."""
 
     _name = "omnisync.health.check"

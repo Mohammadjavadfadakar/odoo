@@ -6,12 +6,12 @@ import time
 
 from odoo import _, api, fields, models
 
-from ..tools import DEFAULT_QUEUE_CHANNEL, QueueJobMixin
+from ..tools import DEFAULT_QUEUE_CHANNEL
 
 _logger = logging.getLogger(__name__)
 
 
-class OmniSyncRunbook(models.Model, QueueJobMixin):
+class OmniSyncRunbook(models.Model):
     """Groups flows into orchestrated execution plans."""
 
     _name = "omnisync.runbook"
