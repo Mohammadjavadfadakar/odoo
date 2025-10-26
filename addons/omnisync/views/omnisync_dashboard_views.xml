@@ -17,8 +17,8 @@
                         <field name="health_failure_count" widget="statinfo" string="Critical Health Failures"/>
                         <field name="runbook_queue_count" widget="statinfo" string="Runbooks In Progress"/>
                     </group>
-                    <group>
-                        <field name="last_jobs" widget="json" string="Recent Jobs" readonly="1"/>
+                    <group string="Recent Jobs">
+                        <field name="last_jobs_display" widget="text" readonly="1" nolabel="1"/>
                     </group>
                 </sheet>
             </form>

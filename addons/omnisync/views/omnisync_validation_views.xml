@@ -112,7 +112,7 @@
                         <field name="res_id"/>
                     </group>
                     <group>
-                        <field name="payload_snapshot" widget="json" readonly="1"/>
+                        <field name="payload_snapshot_display" widget="text" readonly="1"/>
                     </group>
                     <footer>
                         <button name="action_mark_handled" string="Mark Handled" type="object" class="btn-primary" modifiers="{'invisible': [('handled', '=', True)]}"/>

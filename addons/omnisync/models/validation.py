@@ -9,6 +9,8 @@ from odoo import _, fields, models
 from odoo.exceptions import UserError
 from odoo.tools.safe_eval import safe_eval
 
+from ..tools import format_json_value
+
 
 class OmniSyncValidationRule(models.Model):
     """Declarative validation rules evaluated during synchronization."""
@@ -172,6 +174,11 @@ class OmniSyncValidationLog(models.Model):
     )
     message = fields.Char(required=True)
     payload_snapshot = fields.Json()
+    payload_snapshot_display = fields.Text(
+        string="Payload Snapshot (JSON)",
+        compute="_compute_payload_snapshot_display",
+        readonly=True,
+    )
     details = fields.Text()
     company_id = fields.Many2one(
         "res.company",
@@ -194,3 +201,7 @@ class OmniSyncValidationLog(models.Model):
             }
         )
         return True
+
+    def _compute_payload_snapshot_display(self):
+        for record in self:
+            record.payload_snapshot_display = format_json_value(record.payload_snapshot)

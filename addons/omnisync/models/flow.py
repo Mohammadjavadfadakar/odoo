@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-from ..tools import DEFAULT_QUEUE_CHANNEL
+from ..tools import DEFAULT_QUEUE_CHANNEL, format_json_value
 from .system import ConnectorResponse
 
 _logger = logging.getLogger(__name__)
@@ -113,6 +113,11 @@ class OmniSyncFlow(models.Model):
         readonly=True,
         copy=False,
         help="Stores the most recent sandbox preview payload.",
+    )
+    sandbox_preview_display = fields.Text(
+        string="Last Preview (JSON)",
+        compute="_compute_sandbox_preview_display",
+        readonly=True,
     )
     last_preview_at = fields.Datetime(readonly=True, copy=False)
     approval_state = fields.Selection(
@@ -823,6 +828,10 @@ class OmniSyncFlow(models.Model):
         )
         return collector
 
+    def _compute_sandbox_preview_display(self):
+        for record in self:
+            record.sandbox_preview_display = format_json_value(record.sandbox_preview_data)
+
     def _create_version_snapshot(self, name: str):
         """Create a version record containing the current configuration."""
         data = json.dumps(self.export_configuration(), indent=2)
@@ -878,20 +887,20 @@ class OmniSyncFlow(models.Model):
         lines = []
         for line_conf in mapping_conf.get("lines", []):
             lines.append(
-                        (
-                            0,
-                            0,
-                            {
-                                "source_field": line_conf.get("source_field"),
-                                "target_field_name": line_conf.get("target_field_name"),
-                                "default_value": line_conf.get("default_value"),
-                                "formula": line_conf.get("formula"),
-                                "transform_chain": line_conf.get("transforms"),
-                                "is_external_identifier": line_conf.get("is_external_identifier", False),
-                                "relation_resolution": line_conf.get("relation_resolution", "none"),
-                            },
-                        )
-                    )
+                (
+                    0,
+                    0,
+                    {
+                        "source_field": line_conf.get("source_field"),
+                        "target_field_name": line_conf.get("target_field_name"),
+                        "default_value": line_conf.get("default_value"),
+                        "formula": line_conf.get("formula"),
+                        "transform_chain": line_conf.get("transforms"),
+                        "is_external_identifier": line_conf.get("is_external_identifier", False),
+                        "relation_resolution": line_conf.get("relation_resolution", "none"),
+                    },
+                )
+            )
         return (
             0,
             0,
