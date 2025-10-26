@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="omnisync_template_wordpress" model="omnisync.template.pack">
+            <field name="name">WordPress Commerce Starter</field>
+            <field name="key">wordpress</field>
+            <field name="category">cms</field>
+            <field name="description">Bootstrap REST integration with WordPress / WooCommerce.</field>
+            <field name="payload"><![CDATA[
+{
+  "systems": [
+    {
+      "key": "wordpress",
+      "name": "WordPress API",
+      "connector_type": "rest",
+      "base_url": "https://example.com/wp-json"
+    }
+  ],
+  "flows": [
+    {
+      "name": "WordPress Products Inbound",
+      "system_key": "wordpress",
+      "model": "product.template",
+      "direction": "inbound",
+      "endpoints": {"inbound": "/wc/v3/products"}
+    },
+    {
+      "name": "WordPress Products Outbound",
+      "system_key": "wordpress",
+      "model": "product.template",
+      "direction": "outbound",
+      "endpoints": {"outbound": "/wc/v3/products"}
+    }
+  ]
+}
+            ]]></field>
+        </record>
+
+        <record id="omnisync_template_hesabfa" model="omnisync.template.pack">
+            <field name="name">Hesabfa Financial Starter</field>
+            <field name="key">hesabfa</field>
+            <field name="category">accounting</field>
+            <field name="description">Contacts and invoices synchronization with Hesabfa.</field>
+            <field name="payload"><![CDATA[
+{
+  "systems": [
+    {
+      "key": "hesabfa",
+      "name": "Hesabfa API",
+      "connector_type": "rest",
+      "base_url": "https://api.hesabfa.com/v1"
+    }
+  ],
+  "flows": [
+    {
+      "name": "Hesabfa Contacts Inbound",
+      "system_key": "hesabfa",
+      "model": "res.partner",
+      "direction": "inbound",
+      "endpoints": {"inbound": "/customers"}
+    },
+    {
+      "name": "Hesabfa Invoices Outbound",
+      "system_key": "hesabfa",
+      "model": "account.move",
+      "direction": "outbound",
+      "endpoints": {"outbound": "/invoices"}
+    }
+  ]
+}
+            ]]></field>
+        </record>
+
+        <record id="omnisync_template_mahak" model="omnisync.template.pack">
+            <field name="name">Mahak Retail Starter</field>
+            <field name="key">mahak</field>
+            <field name="category">commerce</field>
+            <field name="description">Item and inventory template for Mahak.</field>
+            <field name="payload"><![CDATA[
+{
+  "systems": [
+    {
+      "key": "mahak",
+      "name": "Mahak File Drop",
+      "connector_type": "file",
+      "base_url": "",
+      "file_backend": "local"
+    }
+  ],
+  "flows": [
+    {
+      "name": "Mahak Items Export",
+      "system_key": "mahak",
+      "model": "product.template",
+      "direction": "outbound",
+      "endpoints": {"outbound": "items.csv"}
+    }
+  ]
+}
+            ]]></field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,112 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: OmniSync 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: 2024-01-01 00:00+0000\n"
+"Last-Translator: Auto Generated\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: omnisync
+msgid "OmniSync"
+msgstr "OmniSync"
+
+#. module: omnisync
+msgid "Validation Rules"
+msgstr "Validation Rules"
+
+#. module: omnisync
+msgid "Escalation Policies"
+msgstr "Escalation Policies"
+
+#. module: omnisync
+msgid "Validation Logs"
+msgstr "Validation Logs"
+
+#. module: omnisync
+msgid "Validation Failure Streak"
+msgstr "Validation Failure Streak"
+
+#. module: omnisync
+msgid "Open Validation Blocks"
+msgstr "Open Validation Blocks"
+
+#. module: omnisync
+msgid "Validation Blocks"
+msgstr "Validation Blocks"
+
+#. module: omnisync
+msgid "Validation Rule"
+msgstr "Validation Rule"
+
+#. module: omnisync
+msgid "Validation Log"
+msgstr "Validation Log"
+
+#. module: omnisync
+msgid "Escalation Policy"
+msgstr "Escalation Policy"
+
+#. module: omnisync
+msgid "Unhandled"
+msgstr "Unhandled"
+
+#. module: omnisync
+msgid "Blocking"
+msgstr "Blocking"
+
+#. module: omnisync
+msgid "Warnings"
+msgstr "Warnings"
+
+#. module: omnisync
+msgid "Mark Handled"
+msgstr "Mark Handled"
+
+#. module: omnisync
+msgid "Search Validation Logs"
+msgstr "Search Validation Logs"
+
+#. module: omnisync
+msgid "Validation rule %(name)s failed to evaluate: %(error)s"
+msgstr "Validation rule %(name)s failed to evaluate: %(error)s"
+
+#. module: omnisync
+msgid "Health Checks"
+msgstr "Health Checks"
+
+#. module: omnisync
+msgid "Runbooks"
+msgstr "Runbooks"
+
+#. module: omnisync
+msgid "Critical Health Failures"
+msgstr "Critical Health Failures"
+
+#. module: omnisync
+msgid "Runbooks In Progress"
+msgstr "Runbooks In Progress"
+
+#. module: omnisync
+msgid "Connector Reachability"
+msgstr "Connector Reachability"
+
+#. module: omnisync
+msgid "Flow Preview"
+msgstr "Flow Preview"
+
+#. module: omnisync
+msgid "Mapping Coverage"
+msgstr "Mapping Coverage"
+
+#. module: omnisync
+msgid "Health Check"
+msgstr "Health Check"
+
+#. module: omnisync
+msgid "Runbook"
+msgstr "Runbook"

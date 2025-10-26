@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_omnisync_root" name="OmniSync" sequence="10" parent="base.menu_custom" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+    <menuitem id="menu_omnisync_configuration" name="Configuration" parent="menu_omnisync_root" sequence="10" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_operations" name="Operations" parent="menu_omnisync_root" sequence="20" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+    <menuitem id="menu_omnisync_dashboard" name="Dashboard" parent="menu_omnisync_operations" action="action_omnisync_dashboard" sequence="10" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+    <menuitem id="menu_omnisync_systems" name="Systems" parent="menu_omnisync_configuration" action="action_omnisync_system" sequence="10" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_auth" name="Auth Profiles" parent="menu_omnisync_configuration" action="action_omnisync_auth" sequence="20" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_flows" name="Flows" parent="menu_omnisync_operations" action="action_omnisync_flow" sequence="20" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+    <menuitem id="menu_omnisync_mappings" name="Mappings" parent="menu_omnisync_configuration" action="action_omnisync_mapping" sequence="30" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_jobs" name="Job Logs" parent="menu_omnisync_operations" action="action_omnisync_job_log" sequence="30" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+    <menuitem id="menu_omnisync_conflicts" name="Conflicts" parent="menu_omnisync_operations" action="action_omnisync_conflict_tree" sequence="35" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+    <menuitem id="menu_omnisync_bindings" name="Bindings" parent="menu_omnisync_operations" action="action_omnisync_binding" sequence="37" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+    <menuitem id="menu_omnisync_queue" name="Queue Buffer" parent="menu_omnisync_operations" action="action_omnisync_queue_messages" sequence="40" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_webhooks" name="Webhook Events" parent="menu_omnisync_operations" action="action_omnisync_webhook_events" sequence="50" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_versions" name="Flow Versions" parent="menu_omnisync_configuration" action="action_omnisync_version" sequence="40" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_templates" name="Template Packs" parent="menu_omnisync_configuration" action="action_omnisync_template_pack" sequence="50" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_health_check" name="Health Checks" parent="menu_omnisync_configuration" action="action_omnisync_health_check" sequence="55" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_validation_rules" name="Validation Rules" parent="menu_omnisync_configuration" action="action_omnisync_validation_rules" sequence="60" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_escalation_policies" name="Escalation Policies" parent="menu_omnisync_configuration" action="action_omnisync_escalation_policies" sequence="70" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_runbook" name="Runbooks" parent="menu_omnisync_configuration" action="action_omnisync_runbook" sequence="80" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_validation_logs" name="Validation Logs" parent="menu_omnisync_operations" action="action_omnisync_validation_logs" sequence="45" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
+</odoo>
