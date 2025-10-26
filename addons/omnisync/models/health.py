@@ -7,7 +7,7 @@ from typing import Tuple
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
-from odoo.addons.queue_job.job import job
+from ..tools import queue_job
 
 from .system import ConnectorResponse
 
@@ -99,7 +99,7 @@ class OmniSyncHealthCheck(models.Model):
             check.with_delay(channel="root.omnisync")._run_health_check()
         return True
 
-    @job(default_channel="root.omnisync")
+    @queue_job(default_channel="root.omnisync")
     def _run_health_check(self):
         """Execute the health check asynchronously."""
         self.ensure_one()

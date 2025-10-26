@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
-from odoo.addons.queue_job.job import job
+from ..tools import queue_job
 
 from .system import ConnectorResponse
 
@@ -179,7 +179,7 @@ class OmniSyncFlow(models.Model):
             flow.with_delay(channel=flow.queue_channel or "root.omnisync")._execute_sync()
         return True
 
-    @job(default_channel="root.omnisync")
+    @queue_job(default_channel="root.omnisync")
     def _execute_sync(self, checkpoint: Dict[str, Any] | None = None):
         """Queue job that runs the synchronization."""
         self.ensure_one()

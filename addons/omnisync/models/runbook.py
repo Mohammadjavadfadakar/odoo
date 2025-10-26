@@ -5,7 +5,7 @@ import logging
 import time
 
 from odoo import _, api, fields, models
-from odoo.addons.queue_job.job import job
+from ..tools import queue_job
 
 _logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class OmniSyncRunbook(models.Model):
             runbook.with_delay(channel="root.omnisync")._execute_runbook()
         return True
 
-    @job(default_channel="root.omnisync")
+    @queue_job(default_channel="root.omnisync")
     def _execute_runbook(self):
         """Execute all flows contained in the runbook."""
         self.ensure_one()
