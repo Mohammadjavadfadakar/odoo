@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="seq_omnisync_job" model="ir.sequence">
+            <field name="name">OmniSync Job</field>
+            <field name="code">omnisync.job</field>
+            <field name="prefix">JOB</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_omnisync_conflict" model="ir.sequence">
+            <field name="name">OmniSync Conflict</field>
+            <field name="code">omnisync.conflict</field>
+            <field name="prefix">CONF</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_omnisync_queue" model="ir.sequence">
+            <field name="name">OmniSync Queue Message</field>
+            <field name="code">omnisync.queue</field>
+            <field name="prefix">QUEUE</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_omnisync_webhook" model="ir.sequence">
+            <field name="name">OmniSync Webhook</field>
+            <field name="code">omnisync.webhook</field>
+            <field name="prefix">HOOK</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_omnisync_validation" model="ir.sequence">
+            <field name="name">OmniSync Validation</field>
+            <field name="code">omnisync.validation</field>
+            <field name="prefix">VAL</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>
