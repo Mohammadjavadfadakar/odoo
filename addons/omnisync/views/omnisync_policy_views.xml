@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_omnisync_escalation_policy_tree" model="ir.ui.view">
+        <field name="name">omnisync.escalation.policy.tree</field>
+        <field name="model">omnisync.escalation.policy</field>
+        <field name="arch" type="xml">
+            <list string="Escalation Policies" editable="bottom">
+                <field name="name"/>
+                <field name="flow_id"/>
+                <field name="event_type"/>
+                <field name="trigger_after"/>
+                <field name="cooldown_hours"/>
+                <field name="action_type"/>
+                <field name="last_triggered"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_omnisync_escalation_policy_form" model="ir.ui.view">
+        <field name="name">omnisync.escalation.policy.form</field>
+        <field name="model">omnisync.escalation.policy</field>
+        <field name="arch" type="xml">
+            <form string="Escalation Policy">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="flow_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="event_type"/>
+                            <field name="trigger_after"/>
+                            <field name="cooldown_hours"/>
+                        </group>
+                        <group>
+                            <field name="action_type"/>
+                            <field name="partner_ids" widget="many2many_tags"/>
+                            <field name="activity_type_id"/>
+                            <field name="activity_summary"/>
+                            <field name="message_template"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="last_triggered" readonly="1"/>
+                        <field name="triggered_count" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_escalation_policies" model="ir.actions.act_window">
+        <field name="name">Escalation Policies</field>
+        <field name="res_model">omnisync.escalation.policy</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_flow_id': active_id}</field>
+    </record>
+</odoo>

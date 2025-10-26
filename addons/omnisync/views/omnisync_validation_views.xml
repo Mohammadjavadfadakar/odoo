@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_omnisync_validation_rule_tree" model="ir.ui.view">
+        <field name="name">omnisync.validation.rule.tree</field>
+        <field name="model">omnisync.validation.rule</field>
+        <field name="arch" type="xml">
+            <list string="Validation Rules" editable="bottom">
+                <field name="name"/>
+                <field name="flow_id"/>
+                <field name="direction"/>
+                <field name="severity"/>
+                <field name="sequence"/>
+                <field name="triggered_count"/>
+                <field name="last_triggered"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_omnisync_validation_rule_form" model="ir.ui.view">
+        <field name="name">omnisync.validation.rule.form</field>
+        <field name="model">omnisync.validation.rule</field>
+        <field name="arch" type="xml">
+            <form string="Validation Rule">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="flow_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="direction"/>
+                            <field name="severity"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="message"/>
+                            <field name="description"/>
+                            <field name="triggered_count" readonly="1"/>
+                            <field name="last_triggered" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Expression">
+                            <field name="expression" nolabel="1" placeholder="result = payload and bool(payload)"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_validation_rules" model="ir.actions.act_window">
+        <field name="name">Validation Rules</field>
+        <field name="res_model">omnisync.validation.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_flow_id': active_id}</field>
+    </record>
+
+    <record id="view_omnisync_validation_log_tree" model="ir.ui.view">
+        <field name="name">omnisync.validation.log.tree</field>
+        <field name="model">omnisync.validation.log</field>
+        <field name="arch" type="xml">
+            <list string="Validation Logs">
+                <field name="name"/>
+                <field name="flow_id"/>
+                <field name="rule_id"/>
+                <field name="direction"/>
+                <field name="severity"/>
+                <field name="message"/>
+                <field name="handled"/>
+                <field name="handled_by"/>
+                <field name="handled_date"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_omnisync_validation_log_search" model="ir.ui.view">
+        <field name="name">omnisync.validation.log.search</field>
+        <field name="model">omnisync.validation.log</field>
+        <field name="arch" type="xml">
+            <search string="Search Validation Logs">
+                <field name="name"/>
+                <filter name="unhandled" string="Unhandled" domain="[('handled', '=', False)]" help="Show logs that still require review."/>
+                <filter name="severity_error" string="Blocking" domain="[('severity', '=', 'error')]"/>
+                <filter name="severity_warning" string="Warnings" domain="[('severity', '=', 'warning')]"/>
+                <field name="flow_id" operator="="/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_omnisync_validation_log_form" model="ir.ui.view">
+        <field name="name">omnisync.validation.log.form</field>
+        <field name="model">omnisync.validation.log</field>
+        <field name="arch" type="xml">
+            <form string="Validation Log">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="flow_id"/>
+                        <field name="rule_id"/>
+                        <field name="severity"/>
+                        <field name="direction"/>
+                        <field name="message"/>
+                        <field name="handled"/>
+                        <field name="handled_by" readonly="1"/>
+                        <field name="handled_date" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="res_model"/>
+                        <field name="res_id"/>
+                    </group>
+                    <group>
+                        <field name="payload_snapshot" widget="json" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_mark_handled" string="Mark Handled" type="object" class="btn-primary" modifiers="{'invisible': [('handled', '=', True)]}"/>
+                        <button string="Close" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_validation_logs" model="ir.actions.act_window">
+        <field name="name">Validation Logs</field>
+        <field name="res_model">omnisync.validation.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_unhandled': 1}</field>
+    </record>
+</odoo>

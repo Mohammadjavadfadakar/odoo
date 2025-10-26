@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_omnisync_flow_tree" model="ir.ui.view">
+        <field name="name">omnisync.flow.tree</field>
+        <field name="model">omnisync.flow</field>
+        <field name="arch" type="xml">
+            <list string="Flows">
+                <field name="name"/>
+                <field name="system_id"/>
+                <field name="direction"/>
+                <field name="model_id"/>
+                <field name="schedule_mode"/>
+                <field name="approval_state" widget="badge"/>
+                <field name="pending_conflict_count" widget="badge"/>
+                <field name="last_status" widget="badge"/>
+                <field name="last_run"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_omnisync_flow_form" model="ir.ui.view">
+        <field name="name">omnisync.flow.form</field>
+        <field name="model">omnisync.flow</field>
+        <field name="arch" type="xml">
+            <form string="Flow">
+                <header>
+                    <button name="action_sync_now" string="Sync Now" type="object" class="oe_highlight" groups="omnisync.group_omnisync_admin"/>
+                    <button name="action_generate_preview" string="Preview" type="object" class="oe_highlight" groups="omnisync.group_omnisync_admin"/>
+                    <button name="action_submit_for_approval" string="Submit for Approval" type="object" groups="omnisync.group_omnisync_admin" modifiers="{'invisible': [('approval_state', '=', 'awaiting')]}"/>
+                    <button name="action_open_version_wizard" string="Versions" type="object" groups="omnisync.group_omnisync_admin"/>
+                    <field name="active" widget="boolean_toggle"/>
+                    <field name="approval_state" widget="statusbar" statusbar_visible="draft,awaiting,approved,rejected"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="system_id"/>
+                            <field name="direction"/>
+                            <field name="model_id"/>
+                            <field name="delta_field"/>
+                        </group>
+                        <group>
+                            <field name="schedule_mode"/>
+                            <field name="cron_id" modifiers="{'invisible': [('schedule_mode', '!=', 'scheduled')]}"/>
+                            <field name="queue_channel"/>
+                            <field name="last_status" widget="statusbar" statusbar_visible="idle,success,failed"/>
+                            <field name="last_run" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action" class="oe_stat_button" icon="fa-exclamation-triangle" name="%(action_omnisync_conflict_tree)d" context="{'search_default_flow_id': active_id}" groups="omnisync.group_omnisync_admin">
+                            <field name="pending_conflict_count" widget="statinfo" string="Conflicts"/>
+                        </button>
+                        <button type="object" class="oe_stat_button" icon="fa-bell" name="action_generate_preview" groups="omnisync.group_omnisync_admin">
+                            <span>Preview</span>
+                        </button>
+                    </div>
+                    <notebook>
+                        <page string="Inbound">
+                            <group modifiers="{'invisible': [('direction', '=', 'outbound')]}">
+                                <field name="inbound_endpoint"/>
+                                <field name="graphql_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'graphql')]}"/>
+                                <field name="graphql_variables" modifiers="{'invisible': [('system_id.connector_type', '!=', 'graphql')]}" widget="json"/>
+                                <field name="db_inbound_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'database')]}"/>
+                                <field name="file_inbound_path" modifiers="{'invisible': [('system_id.connector_type', '!=', 'file')]}"/>
+                                <field name="webhook_event_code" modifiers="{'invisible': [('system_id.connector_type', '!=', 'webhook')]}"/>
+                                <field name="queue_topic" modifiers="{'invisible': [('system_id.connector_type', '!=', 'queue')]}"/>
+                            </group>
+                        </page>
+                        <page string="Outbound">
+                            <group modifiers="{'invisible': [('direction', '=', 'inbound')]}">
+                                <field name="outbound_endpoint"/>
+                                <field name="payload_template" widget="json"/>
+                                <field name="db_outbound_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'database')]}"/>
+                                <field name="file_outbound_path" modifiers="{'invisible': [('system_id.connector_type', '!=', 'file')]}"/>
+                                <field name="queue_topic" modifiers="{'invisible': [('system_id.connector_type', '!=', 'queue')]}"/>
+                            </group>
+                        </page>
+                        <page string="Mappings">
+                            <field name="mapping_ids" context="{'default_flow_id': active_id}">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="mode"/>
+                                    <field name="target_model_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Validation">
+                            <group>
+                                <field name="validation_failure_streak" readonly="1"/>
+                                <field name="validation_rule_ids" context="{'default_flow_id': active_id}">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="direction"/>
+                                        <field name="severity"/>
+                                        <field name="sequence"/>
+                                        <field name="active"/>
+                                    </list>
+                                </field>
+                                <button type="action" class="oe_stat_button" icon="fa-shield" name="%(action_omnisync_validation_logs)d" context="{'search_default_flow_id': active_id}" groups="omnisync.group_omnisync_admin">
+                                    <span>Validation Logs</span>
+                                </button>
+                            </group>
+                        </page>
+                        <page string="Escalation">
+                            <group>
+                                <field name="escalation_policy_ids" context="{'default_flow_id': active_id}">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="event_type"/>
+                                        <field name="trigger_after"/>
+                                        <field name="action_type"/>
+                                        <field name="active"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Preview">
+                            <group>
+                                <field name="sandbox_preview_data" widget="json" readonly="1"/>
+                                <field name="last_preview_at" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Alerts">
+                            <group>
+                                <field name="failure_threshold"/>
+                                <field name="consecutive_failures" readonly="1"/>
+                                <field name="alert_partner_ids" widget="many2many_tags"/>
+                            </group>
+                        </page>
+                        <page string="Versions">
+                            <field name="version_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="approved_by"/>
+                                    <field name="approved_on"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_flow" model="ir.actions.act_window">
+        <field name="name">Flows</field>
+        <field name="res_model">omnisync.flow</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
