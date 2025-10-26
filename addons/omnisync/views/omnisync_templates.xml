@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="OmniSync Assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript">
+                odoo.define('omnisync.dashboard.refresh', function (require) {
+                    "use strict";
+                    var core = require('web.core');
+                    var rpc = require('web.rpc');
+                    core.bus.on('web_client_ready', null, function () {
+                        setInterval(function () {
+                            rpc.query({route: '/omnisync/dashboard/metrics'}).then(function (data) {
+                                core.bus.trigger('omnisync_dashboard_update', data);
+                            });
+                        }, 60000);
+                    });
+                });
+            </script>
+        </xpath>
+    </template>
+</odoo>
