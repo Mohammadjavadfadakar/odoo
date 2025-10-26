@@ -36,7 +36,7 @@ class OmniSyncFlow(models.Model):
         default="inbound",
         required=True,
     )
-    model_id = fields.Many2one("ir.model", required=True)
+    model_id = fields.Many2one("ir.model", required=True, ondelete="cascade")
     mapping_ids = fields.One2many("omnisync.mapping", "flow_id")
     validation_rule_ids = fields.One2many(
         "omnisync.validation.rule",

@@ -34,7 +34,7 @@ class OmniSyncBinding(models.Model):
         store=True,
         readonly=True,
     )
-    model_id = fields.Many2one("ir.model", required=True)
+    model_id = fields.Many2one("ir.model", required=True, ondelete="cascade")
     model_name = fields.Char(related="model_id.model", store=True, readonly=True)
     res_id = fields.Integer(string="Record ID", required=True, index=True)
     direction = fields.Selection(

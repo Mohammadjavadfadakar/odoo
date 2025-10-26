@@ -40,6 +40,7 @@ class OmniSyncMapping(models.Model):
         string="Target Model",
         required=True,
         domain=[("model", "!=", "")],
+        ondelete="cascade",
     )
     mode = fields.Selection(
         [("simple", "Simple"), ("advanced", "Advanced")],
