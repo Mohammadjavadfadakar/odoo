@@ -31,7 +31,7 @@
         <field name="arch" type="xml">
             <kanban create="0" quick_create="0">
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card">
                         <div class="oe_kanban_card">
                             <div class="o_kanban_primary_right">
                                 <div class="o_stat_value">Success: <span t-esc="record.success_count.value"/></div>

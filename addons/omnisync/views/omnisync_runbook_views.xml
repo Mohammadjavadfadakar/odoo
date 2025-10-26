@@ -68,8 +68,7 @@
         <field name="name">Runbooks</field>
         <field name="res_model">omnisync.runbook</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{"search_default_company_id": [active_id]}</field>
+        <field name="context">{"search_default_company_id": [id]}</field>
     </record>
 
-    <menuitem id="menu_omnisync_runbook" name="Runbooks" parent="menu_omnisync_configuration" action="action_omnisync_runbook" sequence="60" groups="omnisync.group_omnisync_admin"/>
 </odoo>

@@ -50,7 +50,7 @@
                         </group>
                     </group>
                     <div class="oe_button_box" name="button_box">
-                        <button type="action" class="oe_stat_button" icon="fa-exclamation-triangle" name="%(action_omnisync_conflict_tree)d" context="{'search_default_flow_id': active_id}" groups="omnisync.group_omnisync_admin">
+                        <button type="action" class="oe_stat_button" icon="fa-exclamation-triangle" name="%(action_omnisync_conflict_tree)d" context="{'search_default_flow_id': id}" groups="omnisync.group_omnisync_admin">
                             <field name="pending_conflict_count" widget="statinfo" string="Conflicts"/>
                         </button>
                         <button type="object" class="oe_stat_button" icon="fa-bell" name="action_generate_preview" groups="omnisync.group_omnisync_admin">
@@ -79,7 +79,7 @@
                             </group>
                         </page>
                         <page string="Mappings">
-                            <field name="mapping_ids" context="{'default_flow_id': active_id}">
+                            <field name="mapping_ids" context="{'default_flow_id': id}">
                                 <list editable="bottom">
                                     <field name="name"/>
                                     <field name="mode"/>
@@ -90,7 +90,7 @@
                         <page string="Validation">
                             <group>
                                 <field name="validation_failure_streak" readonly="1"/>
-                                <field name="validation_rule_ids" context="{'default_flow_id': active_id}">
+                                <field name="validation_rule_ids" context="{'default_flow_id': id}">
                                     <list editable="bottom">
                                         <field name="name"/>
                                         <field name="direction"/>
@@ -99,14 +99,14 @@
                                         <field name="active"/>
                                     </list>
                                 </field>
-                                <button type="action" class="oe_stat_button" icon="fa-shield" name="%(action_omnisync_validation_logs)d" context="{'search_default_flow_id': active_id}" groups="omnisync.group_omnisync_admin">
+                                <button type="action" class="oe_stat_button" icon="fa-shield" name="%(action_omnisync_validation_logs)d" context="{'search_default_flow_id': id}" groups="omnisync.group_omnisync_admin">
                                     <span>Validation Logs</span>
                                 </button>
                             </group>
                         </page>
                         <page string="Escalation">
                             <group>
-                                <field name="escalation_policy_ids" context="{'default_flow_id': active_id}">
+                                <field name="escalation_policy_ids" context="{'default_flow_id': id}">
                                     <list editable="bottom">
                                         <field name="name"/>
                                         <field name="event_type"/>

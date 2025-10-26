@@ -1,39 +1,39 @@
 msgid ""
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Health Checks"
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Runbooks"
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Critical Health Failures"
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Runbooks In Progress"
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Connector Reachability"
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Flow Preview"
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Mapping Coverage"
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Health Check"
 msgstr ""
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Runbook"
 msgstr ""
 "Project-Id-Version: OmniSync 18.0\n"
@@ -47,66 +47,66 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "OmniSync"
 msgstr "اومنی‌سینک"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Rules"
 msgstr "قوانین اعتبارسنجی"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Escalation Policies"
 msgstr "خط‌مشی‌های تصعید"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Logs"
 msgstr "لاگ‌های اعتبارسنجی"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Failure Streak"
 msgstr "رشته خطای اعتبارسنجی"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Open Validation Blocks"
 msgstr "مسدودی‌های اعتبارسنجی باز"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Blocks"
 msgstr "مسدودی‌های اعتبارسنجی"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Rule"
 msgstr "قانون اعتبارسنجی"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Log"
 msgstr "لاگ اعتبارسنجی"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Escalation Policy"
 msgstr "خط‌مشی تصعید"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Unhandled"
 msgstr "رسیدگی‌نشده"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Blocking"
 msgstr "مسدودکننده"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Warnings"
 msgstr "هشدارها"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Mark Handled"
 msgstr "علامت‌گذاری به‌عنوان رسیدگی‌شده"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Search Validation Logs"
 msgstr "جستجوی لاگ‌های اعتبارسنجی"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation rule %(name)s failed to evaluate: %(error)s"
 msgstr "قانون اعتبارسنجی %(name)s در ارزیابی خطا داد: %(error)s"

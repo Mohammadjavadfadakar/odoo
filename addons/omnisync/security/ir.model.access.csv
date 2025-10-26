@@ -35,3 +35,7 @@
 "access_omnisync_runbook_admin","access_omnisync_runbook_admin","model_omnisync_runbook","omnisync.group_omnisync_admin",1,1,1,1
 "access_omnisync_runbook_dashboard","access_omnisync_runbook_dashboard","model_omnisync_runbook","omnisync.group_omnisync_dashboard",1,0,0,0
 "access_omnisync_runbook_line_admin","access_omnisync_runbook_line_admin","model_omnisync_runbook_line","omnisync.group_omnisync_admin",1,1,1,1
+"access_omnisync_conflict_resolution_wizard","access_omnisync_conflict_resolution_wizard","model_omnisync_conflict_resolution_wizard","omnisync.group_omnisync_admin",1,0,0,0
+"access_omnisync_sandbox_preview_wizard","access_omnisync_sandbox_preview_wizard","model_omnisync_sandbox_preview_wizard","omnisync.group_omnisync_admin",1,0,0,0
+"access_omnisync_version_promote_wizard","access_omnisync_version_promote_wizard","model_omnisync_version_promote_wizard","omnisync.group_omnisync_admin",1,0,0,0
+"access_omnisync_template_apply_wizard","access_omnisync_template_apply_wizard","model_omnisync_template_apply_wizard","omnisync.group_omnisync_admin",1,0,0,0

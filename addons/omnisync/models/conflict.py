@@ -9,6 +9,7 @@ class OmniSyncConflict(models.Model):
 
     _name = "omnisync.conflict"
     _description = "OmniSync Conflict"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc"
 
     name = fields.Char(
@@ -79,6 +80,17 @@ class OmniSyncConflict(models.Model):
             conflict.resolved_by = self.env.user
             conflict.resolved_on = fields.Datetime.now()
         return True
+
+    def action_open_resolution_wizard(self):
+        """Open the conflict resolution wizard."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "omnisync.conflict.resolution.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_conflict_id": self.id},
+        }
 
     def _mark_resolved(self, resolution):
         """Set resolution metadata and notify the flow."""

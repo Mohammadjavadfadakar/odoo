@@ -18,7 +18,7 @@ OmniSync is a no-code/low-code integration engine for Odoo Enterprise. It enable
 
 ## Installation
 
-1. Ensure the `queue_job` module is installed and workers are running.
+1. Install the `queue_job` module from the OCA/queue repository and ensure its workers are running.
 2. Add `omnisync` to your Odoo addons path and update the apps list.
 3. Install OmniSync from the Apps menu (Developer mode required).
 

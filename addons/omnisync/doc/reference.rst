@@ -42,9 +42,9 @@ Extensibility Points
 --------------------
 Developers can extend OmniSync without modifying core files:
 
-* Inherit connector mixins to support new transports (e.g., proprietary APIs).
+* Extend the provided connector classes to support new transports (e.g., proprietary APIs).
 * Override mapping transforms by registering new transform functions via the ``omnisync.transform`` registry.
-* Add queue job decorators or listeners to react to flow events (pre/post execution).
+* Use ``with_delay`` hooks or queue job listeners to react to flow events (pre/post execution).
 * Provide additional template packs by creating data files under ``data/`` with ``omnisync.template.pack`` records.
 
 Testing

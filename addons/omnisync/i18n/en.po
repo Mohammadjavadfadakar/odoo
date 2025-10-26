@@ -11,102 +11,102 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "OmniSync"
 msgstr "OmniSync"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Rules"
 msgstr "Validation Rules"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Escalation Policies"
 msgstr "Escalation Policies"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Logs"
 msgstr "Validation Logs"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Failure Streak"
 msgstr "Validation Failure Streak"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Open Validation Blocks"
 msgstr "Open Validation Blocks"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Blocks"
 msgstr "Validation Blocks"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Rule"
 msgstr "Validation Rule"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation Log"
 msgstr "Validation Log"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Escalation Policy"
 msgstr "Escalation Policy"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Unhandled"
 msgstr "Unhandled"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Blocking"
 msgstr "Blocking"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Warnings"
 msgstr "Warnings"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Mark Handled"
 msgstr "Mark Handled"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Search Validation Logs"
 msgstr "Search Validation Logs"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Validation rule %(name)s failed to evaluate: %(error)s"
 msgstr "Validation rule %(name)s failed to evaluate: %(error)s"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Health Checks"
 msgstr "Health Checks"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Runbooks"
 msgstr "Runbooks"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Critical Health Failures"
 msgstr "Critical Health Failures"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Runbooks In Progress"
 msgstr "Runbooks In Progress"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Connector Reachability"
 msgstr "Connector Reachability"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Flow Preview"
 msgstr "Flow Preview"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Mapping Coverage"
 msgstr "Mapping Coverage"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Health Check"
 msgstr "Health Check"
 
-#: addons/omnisync
+#. module: omnisync
 msgid "Runbook"
 msgstr "Runbook"

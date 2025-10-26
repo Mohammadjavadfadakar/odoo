@@ -12,6 +12,7 @@ class OmniSyncFlowVersion(models.Model):
 
     _name = "omnisync.flow.version"
     _description = "OmniSync Flow Version"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "create_date desc"
 
     name = fields.Char(required=True)

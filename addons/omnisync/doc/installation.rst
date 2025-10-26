@@ -3,7 +3,7 @@ Installation & Initial Setup
 
 Requirements
 ------------
-* Odoo 18 Enterprise with the ``queue_job`` module installed.
+* Odoo 18 Enterprise with the ``queue_job`` module installed (available from the `OCA/queue <https://github.com/OCA/queue>`_ repository).
 * Python dependencies listed in ``requirements.txt`` for queue workers and OAuth flows.
 * Access to outbound network services so connectors can reach external platforms.
 
