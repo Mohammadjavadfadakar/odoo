@@ -26,7 +26,7 @@
                 <header>
                     <button name="action_sync_now" string="Sync Now" type="object" class="oe_highlight" groups="omnisync.group_omnisync_admin"/>
                     <button name="action_generate_preview" string="Preview" type="object" class="oe_highlight" groups="omnisync.group_omnisync_admin"/>
-                    <button name="action_submit_for_approval" string="Submit for Approval" type="object" groups="omnisync.group_omnisync_admin" attrs="{'invisible':[('approval_state','=','awaiting')]}"/>
+                    <button name="action_submit_for_approval" string="Submit for Approval" type="object" groups="omnisync.group_omnisync_admin" modifiers="{'invisible': [('approval_state', '=', 'awaiting')]}"/>
                     <button name="action_open_version_wizard" string="Versions" type="object" groups="omnisync.group_omnisync_admin"/>
                     <field name="active" widget="boolean_toggle"/>
                     <field name="approval_state" widget="statusbar" statusbar_visible="draft,awaiting,approved,rejected"/>
@@ -43,7 +43,7 @@
                         </group>
                         <group>
                             <field name="schedule_mode"/>
-                            <field name="cron_id" attrs="{'invisible':[('schedule_mode','!=','scheduled')]}"/>
+                            <field name="cron_id" modifiers="{'invisible': [('schedule_mode', '!=', 'scheduled')]}"/>
                             <field name="queue_channel"/>
                             <field name="last_status" widget="statusbar" statusbar_visible="idle,success,failed"/>
                             <field name="last_run" readonly="1"/>
@@ -59,23 +59,23 @@
                     </div>
                     <notebook>
                         <page string="Inbound">
-                            <group attrs="{'invisible':[('direction','=','outbound')]}">
+                            <group modifiers="{'invisible': [('direction', '=', 'outbound')]}">
                                 <field name="inbound_endpoint"/>
-                                <field name="graphql_query" attrs="{'invisible':[('system_id.connector_type','!=','graphql')]}"/>
-                                <field name="graphql_variables" attrs="{'invisible':[('system_id.connector_type','!=','graphql')]}" widget="json"/>
-                                <field name="db_inbound_query" attrs="{'invisible':[('system_id.connector_type','!=','database')]}"/>
-                                <field name="file_inbound_path" attrs="{'invisible':[('system_id.connector_type','!=','file')]}"/>
-                                <field name="webhook_event_code" attrs="{'invisible':[('system_id.connector_type','!=','webhook')]}"/>
-                                <field name="queue_topic" attrs="{'invisible':[('system_id.connector_type','!=','queue')]}"/>
+                                <field name="graphql_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'graphql')]}"/>
+                                <field name="graphql_variables" modifiers="{'invisible': [('system_id.connector_type', '!=', 'graphql')]}" widget="json"/>
+                                <field name="db_inbound_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'database')]}"/>
+                                <field name="file_inbound_path" modifiers="{'invisible': [('system_id.connector_type', '!=', 'file')]}"/>
+                                <field name="webhook_event_code" modifiers="{'invisible': [('system_id.connector_type', '!=', 'webhook')]}"/>
+                                <field name="queue_topic" modifiers="{'invisible': [('system_id.connector_type', '!=', 'queue')]}"/>
                             </group>
                         </page>
                         <page string="Outbound">
-                            <group attrs="{'invisible':[('direction','=','inbound')]}">
+                            <group modifiers="{'invisible': [('direction', '=', 'inbound')]}">
                                 <field name="outbound_endpoint"/>
                                 <field name="payload_template" widget="json"/>
-                                <field name="db_outbound_query" attrs="{'invisible':[('system_id.connector_type','!=','database')]}"/>
-                                <field name="file_outbound_path" attrs="{'invisible':[('system_id.connector_type','!=','file')]}"/>
-                                <field name="queue_topic" attrs="{'invisible':[('system_id.connector_type','!=','queue')]}"/>
+                                <field name="db_outbound_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'database')]}"/>
+                                <field name="file_outbound_path" modifiers="{'invisible': [('system_id.connector_type', '!=', 'file')]}"/>
+                                <field name="queue_topic" modifiers="{'invisible': [('system_id.connector_type', '!=', 'queue')]}"/>
                             </group>
                         </page>
                         <page string="Mappings">

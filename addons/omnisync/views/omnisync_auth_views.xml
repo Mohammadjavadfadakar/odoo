@@ -28,9 +28,9 @@
                             <field name="name"/>
                             <field name="company_id"/>
                             <field name="auth_type"/>
-                            <field name="token_endpoint" attrs="{'invisible': [('auth_type', '=', 'api_key')]}"/>
-                            <field name="client_id" attrs="{'invisible': [('auth_type', '=', 'api_key')]}"/>
-                            <field name="client_secret_masked" readonly="1" attrs="{'invisible': [('auth_type', '=', 'api_key')]}"/>
+                            <field name="token_endpoint" modifiers="{'invisible': [('auth_type', '=', 'api_key')]}"/>
+                            <field name="client_id" modifiers="{'invisible': [('auth_type', '=', 'api_key')]}"/>
+                            <field name="client_secret_masked" readonly="1" modifiers="{'invisible': [('auth_type', '=', 'api_key')]}"/>
                         </group>
                         <group>
                             <field name="description" colspan="2"/>

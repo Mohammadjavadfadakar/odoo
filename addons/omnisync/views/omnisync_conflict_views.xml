@@ -21,7 +21,7 @@
         <field name="arch" type="xml">
             <form string="Conflict">
                 <header>
-                    <button name="%(action_omnisync_conflict_wizard)d" type="action" string="Resolve" class="oe_highlight" attrs="{'invisible':[('state','!=','pending')]}"/>
+                    <button name="%(action_omnisync_conflict_wizard)d" type="action" string="Resolve" class="oe_highlight" modifiers="{'invisible': [('state', '!=', 'pending')]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="pending,resolved,dismissed"/>
                 </header>
                 <sheet>

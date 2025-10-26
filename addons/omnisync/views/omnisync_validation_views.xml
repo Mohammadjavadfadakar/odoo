@@ -115,7 +115,7 @@
                         <field name="payload_snapshot" widget="json" readonly="1"/>
                     </group>
                     <footer>
-                        <button name="action_mark_handled" string="Mark Handled" type="object" class="btn-primary" attrs="{'invisible': [('handled', '=', True)]}"/>
+                        <button name="action_mark_handled" string="Mark Handled" type="object" class="btn-primary" modifiers="{'invisible': [('handled', '=', True)]}"/>
                         <button string="Close" class="btn-secondary" special="cancel"/>
                     </footer>
                 </sheet>

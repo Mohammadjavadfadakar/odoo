@@ -42,7 +42,7 @@
             <form string="Binding">
                 <sheet>
                     <header>
-                        <button name="action_open_record" type="object" string="Open Record" class="oe_highlight" attrs="{'invisible': [('model_id','=',False)]}"/>
+                        <button name="action_open_record" type="object" string="Open Record" class="oe_highlight" modifiers="{'invisible': [('model_id', '=', False)]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="pending,synced,failed"/>
                     </header>
                     <group>

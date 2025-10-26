@@ -43,20 +43,20 @@
                         <page string="Connector Settings">
                             <group>
                                 <group>
-                                    <field name="graphql_default_query" attrs="{'invisible':[('connector_type','!=','graphql')]}"/>
-                                    <field name="db_engine" attrs="{'invisible':[('connector_type','!=','database')]}"/>
-                                    <field name="db_host" attrs="{'invisible':[('connector_type','!=','database')]}"/>
-                                    <field name="db_port" attrs="{'invisible':[('connector_type','!=','database')]}"/>
-                                    <field name="db_name" attrs="{'invisible':[('connector_type','!=','database')]}"/>
-                                    <field name="db_username" attrs="{'invisible':[('connector_type','!=','database')]}"/>
+                                    <field name="graphql_default_query" modifiers="{'invisible': [('connector_type', '!=', 'graphql')]}"/>
+                                    <field name="db_engine" modifiers="{'invisible': [('connector_type', '!=', 'database')]}"/>
+                                    <field name="db_host" modifiers="{'invisible': [('connector_type', '!=', 'database')]}"/>
+                                    <field name="db_port" modifiers="{'invisible': [('connector_type', '!=', 'database')]}"/>
+                                    <field name="db_name" modifiers="{'invisible': [('connector_type', '!=', 'database')]}"/>
+                                    <field name="db_username" modifiers="{'invisible': [('connector_type', '!=', 'database')]}"/>
                                 </group>
                                 <group>
-                                    <field name="file_backend" attrs="{'invisible':[('connector_type','!=','file')]}"/>
-                                    <field name="file_base_path" attrs="{'invisible':[('connector_type','!=','file')]}"/>
-                                    <field name="file_format" attrs="{'invisible':[('connector_type','!=','file')]}"/>
-                                    <field name="webhook_secret" attrs="{'invisible':[('connector_type','!=','webhook')]}"/>
-                                    <field name="queue_backend" attrs="{'invisible':[('connector_type','!=','queue')]}"/>
-                                    <field name="queue_topic_prefix" attrs="{'invisible':[('connector_type','!=','queue')]}"/>
+                                    <field name="file_backend" modifiers="{'invisible': [('connector_type', '!=', 'file')]}"/>
+                                    <field name="file_base_path" modifiers="{'invisible': [('connector_type', '!=', 'file')]}"/>
+                                    <field name="file_format" modifiers="{'invisible': [('connector_type', '!=', 'file')]}"/>
+                                    <field name="webhook_secret" modifiers="{'invisible': [('connector_type', '!=', 'webhook')]}"/>
+                                    <field name="queue_backend" modifiers="{'invisible': [('connector_type', '!=', 'queue')]}"/>
+                                    <field name="queue_topic_prefix" modifiers="{'invisible': [('connector_type', '!=', 'queue')]}"/>
                                 </group>
                             </group>
                         </page>

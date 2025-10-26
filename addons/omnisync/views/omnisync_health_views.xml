@@ -17,7 +17,7 @@
                         <group>
                             <field name="check_type"/>
                             <field name="severity"/>
-                            <field name="target_endpoint" attrs="{'invisible': [('check_type', '!=', 'connector')]}"/>
+                            <field name="target_endpoint" modifiers="{'invisible': [('check_type', '!=', 'connector')]}"/>
                             <field name="notify_activity_type_id"/>
                             <field name="responsible_user_id"/>
                         </group>
