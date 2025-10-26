@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_omnisync_system_tree" model="ir.ui.view">
+        <field name="name">omnisync.system.tree</field>
+        <field name="model">omnisync.system</field>
+        <field name="arch" type="xml">
+            <list string="Systems">
+                <field name="name"/>
+                <field name="connector_type"/>
+                <field name="base_url"/>
+                <field name="company_id"/>
+                <field name="last_sync_status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_omnisync_system_form" model="ir.ui.view">
+        <field name="name">omnisync.system.form</field>
+        <field name="model">omnisync.system</field>
+        <field name="arch" type="xml">
+            <form string="Integration System">
+                <header>
+                    <button name="action_test_connection" type="object" string="Test Connection" class="oe_highlight" groups="omnisync.group_omnisync_admin"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="connector_type"/>
+                            <field name="base_url"/>
+                            <field name="auth_profile_id" options="{'no_create': False}"/>
+                            <field name="sandbox_mode"/>
+                        </group>
+                        <group>
+                            <field name="company_id"/>
+                            <field name="extra_headers" widget="json"/>
+                            <field name="default_params" widget="json"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Connector Settings">
+                            <group>
+                                <group>
+                                    <field name="graphql_default_query" attrs="{'invisible':[('connector_type','!=','graphql')]}"/>
+                                    <field name="db_engine" attrs="{'invisible':[('connector_type','!=','database')]}"/>
+                                    <field name="db_host" attrs="{'invisible':[('connector_type','!=','database')]}"/>
+                                    <field name="db_port" attrs="{'invisible':[('connector_type','!=','database')]}"/>
+                                    <field name="db_name" attrs="{'invisible':[('connector_type','!=','database')]}"/>
+                                    <field name="db_username" attrs="{'invisible':[('connector_type','!=','database')]}"/>
+                                </group>
+                                <group>
+                                    <field name="file_backend" attrs="{'invisible':[('connector_type','!=','file')]}"/>
+                                    <field name="file_base_path" attrs="{'invisible':[('connector_type','!=','file')]}"/>
+                                    <field name="file_format" attrs="{'invisible':[('connector_type','!=','file')]}"/>
+                                    <field name="webhook_secret" attrs="{'invisible':[('connector_type','!=','webhook')]}"/>
+                                    <field name="queue_backend" attrs="{'invisible':[('connector_type','!=','queue')]}"/>
+                                    <field name="queue_topic_prefix" attrs="{'invisible':[('connector_type','!=','queue')]}"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Flows">
+                            <field name="flow_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="direction"/>
+                                    <field name="schedule_mode"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_system" model="ir.actions.act_window">
+        <field name="name">Systems</field>
+        <field name="res_model">omnisync.system</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

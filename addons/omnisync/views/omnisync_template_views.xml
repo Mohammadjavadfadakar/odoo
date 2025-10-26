@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_omnisync_template_tree" model="ir.ui.view">
+        <field name="name">omnisync.template.pack.tree</field>
+        <field name="model">omnisync.template.pack</field>
+        <field name="arch" type="xml">
+            <list string="Template Packs">
+                <field name="name"/>
+                <field name="key"/>
+                <field name="category"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_omnisync_template_form" model="ir.ui.view">
+        <field name="name">omnisync.template.pack.form</field>
+        <field name="model">omnisync.template.pack</field>
+        <field name="arch" type="xml">
+            <form string="Template Pack">
+                <header>
+                    <button name="action_apply" string="Apply" type="object" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="key"/>
+                        <field name="category"/>
+                        <field name="description" widget="text"/>
+                    </group>
+                    <group>
+                        <field name="payload" widget="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_template_pack" model="ir.actions.act_window">
+        <field name="name">Template Packs</field>
+        <field name="res_model">omnisync.template.pack</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

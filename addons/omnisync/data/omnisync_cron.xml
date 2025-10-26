@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_omnisync_dashboard_refresh" model="ir.cron">
+            <field name="name">OmniSync Dashboard Refresh</field>
+            <field name="model_id" ref="model_omnisync_dashboard"/>
+            <field name="state">code</field>
+            <field name="code">model.search([])._compute_metrics()</field>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+        </record>
+        <record id="ir_cron_omnisync_health_checks" model="ir.cron">
+            <field name="name">OmniSync Health Checks</field>
+            <field name="model_id" ref="model_omnisync_health_check"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_run_active_checks()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+        </record>
+    </data>
+</odoo>
