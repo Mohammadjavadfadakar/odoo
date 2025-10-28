@@ -6,6 +6,13 @@
         <field name="arch" type="xml">
             <form string="Runbook">
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Bundle multiple flows into an orchestrated checklist. Configure
+                            <strong>Runbook Lines</strong> to define execution order, preview
+                            mode, and operator guidance for each step.
+                        </p>
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>
@@ -38,11 +45,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter/>
                 <footer>
                     <button string="Execute" type="object" name="action_execute" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
@@ -68,7 +71,55 @@
         <field name="name">Runbooks</field>
         <field name="res_model">omnisync.runbook</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{"search_default_company_id": [id]}</field>
+        <field name="context">{"search_default_company_id": [user.company_id.id] if user.company_id else []}</field>
+    </record>
+
+    <record id="view_omnisync_runbook_line_tree" model="ir.ui.view">
+        <field name="name">omnisync.runbook.line.tree</field>
+        <field name="model">omnisync.runbook.line</field>
+        <field name="arch" type="xml">
+            <list string="Runbook Lines" default_order="sequence">
+                <field name="runbook_id"/>
+                <field name="sequence"/>
+                <field name="flow_id"/>
+                <field name="preview_mode"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_omnisync_runbook_line_form" model="ir.ui.view">
+        <field name="name">omnisync.runbook.line.form</field>
+        <field name="model">omnisync.runbook.line</field>
+        <field name="arch" type="xml">
+            <form string="Runbook Line">
+                <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Choose which flow should run for this step and whether the
+                            synchronization should execute in sandbox preview mode.
+                        </p>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="runbook_id"/>
+                            <field name="sequence"/>
+                            <field name="flow_id"/>
+                        </group>
+                        <group>
+                            <field name="preview_mode"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_runbook_line" model="ir.actions.act_window">
+        <field name="name">Runbook Lines</field>
+        <field name="res_model">omnisync.runbook.line</field>
+        <field name="view_mode">list,form</field>
     </record>
 
 </odoo>

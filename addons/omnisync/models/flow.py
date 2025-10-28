@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-from ..tools import DEFAULT_QUEUE_CHANNEL
+from ..tools import DEFAULT_QUEUE_CHANNEL, format_json_value
 from .system import ConnectorResponse
 
 _logger = logging.getLogger(__name__)
@@ -30,23 +30,38 @@ class OmniSyncFlow(models.Model):
         default=lambda self: self.env.company,
         required=True,
     )
-    system_id = fields.Many2one("omnisync.system", required=True)
+    system_id = fields.Many2one(
+        "omnisync.system",
+        required=True,
+        help="Integration system that executes the connector logic for the flow.",
+    )
     direction = fields.Selection(
         [("inbound", "Inbound"), ("outbound", "Outbound")],
         default="inbound",
         required=True,
     )
-    model_id = fields.Many2one("ir.model", required=True, ondelete="cascade")
-    mapping_ids = fields.One2many("omnisync.mapping", "flow_id")
+    model_id = fields.Many2one(
+        "ir.model",
+        required=True,
+        ondelete="cascade",
+        help="Odoo model that receives records from the synchronization.",
+    )
+    mapping_ids = fields.One2many(
+        "omnisync.mapping",
+        "flow_id",
+        help="Mapping definitions translating payloads to Odoo field values.",
+    )
     validation_rule_ids = fields.One2many(
         "omnisync.validation.rule",
         "flow_id",
         string="Validation Rules",
+        help="Rules evaluated before commits to guard business requirements.",
     )
     escalation_policy_ids = fields.One2many(
         "omnisync.escalation.policy",
         "flow_id",
         string="Escalation Policies",
+        help="Automations that notify stakeholders after repeated failures.",
     )
     schedule_mode = fields.Selection(
         [
@@ -55,24 +70,37 @@ class OmniSyncFlow(models.Model):
             ("event", "Event Driven"),
         ],
         default="manual",
+        help="Determines whether runs are manual, cron driven, or triggered by events.",
     )
-    cron_id = fields.Many2one("ir.cron")
+    cron_id = fields.Many2one(
+        "ir.cron",
+        help="Optional scheduled action that launches the flow at a fixed cadence.",
+    )
     inbound_endpoint = fields.Char(help="Endpoint for inbound operations")
     outbound_endpoint = fields.Char(help="Endpoint for outbound operations")
     payload_template = fields.Text(
         help="Optional JSON template applied when pushing data to external systems."
     )
-    last_run = fields.Datetime(readonly=True)
+    last_run = fields.Datetime(
+        readonly=True,
+        help="Timestamp of the most recent successful or failed execution.",
+    )
     last_status = fields.Selection(
         [("idle", "Idle"), ("success", "Success"), ("failed", "Failed")],
         default="idle",
+        help="Outcome of the latest execution attempt used for quick diagnostics.",
     )
-    queue_channel = fields.Char(default=DEFAULT_QUEUE_CHANNEL)
+    queue_channel = fields.Char(
+        default=DEFAULT_QUEUE_CHANNEL,
+        help="Queue channel used when dispatching background jobs for the flow.",
+    )
     sandbox_mode = fields.Boolean(
         related="system_id.sandbox_mode",
         readonly=True,
     )
-    description = fields.Text()
+    description = fields.Text(
+        help="Operational handbook explaining how the flow should be managed.",
+    )
     delta_field = fields.Char(
         help="Field name used for delta synchronization."
     )
@@ -114,7 +142,17 @@ class OmniSyncFlow(models.Model):
         copy=False,
         help="Stores the most recent sandbox preview payload.",
     )
-    last_preview_at = fields.Datetime(readonly=True, copy=False)
+    sandbox_preview_display = fields.Text(
+        string="Last Preview (JSON)",
+        compute="_compute_sandbox_preview_display",
+        readonly=True,
+        help="Readable representation of the stored sandbox preview payload.",
+    )
+    last_preview_at = fields.Datetime(
+        readonly=True,
+        copy=False,
+        help="Moment when the sandbox preview was last generated.",
+    )
     approval_state = fields.Selection(
         [
             ("draft", "Draft"),
@@ -125,22 +163,33 @@ class OmniSyncFlow(models.Model):
         default="draft",
         tracking=True,
     )
-    version_ids = fields.One2many("omnisync.flow.version", "flow_id", string="Versions")
+    version_ids = fields.One2many(
+        "omnisync.flow.version",
+        "flow_id",
+        string="Versions",
+        help="Archived configuration snapshots captured during the approval process.",
+    )
     current_version_id = fields.Many2one(
         "omnisync.flow.version",
         string="Active Version",
         readonly=True,
+        help="Approved flow version currently deployed to production.",
     )
     failure_threshold = fields.Integer(
         string="Failure Threshold",
         default=3,
         help="Number of consecutive failures before alerts are triggered.",
     )
-    consecutive_failures = fields.Integer(readonly=True, default=0)
+    consecutive_failures = fields.Integer(
+        readonly=True,
+        default=0,
+        help="Number of failed runs counted toward the failure threshold.",
+    )
     validation_failure_streak = fields.Integer(
         string="Validation Failure Streak",
         readonly=True,
         default=0,
+        help="Number of consecutive validation failures awaiting operator review.",
     )
     alert_partner_ids = fields.Many2many(
         "res.partner",
@@ -823,6 +872,10 @@ class OmniSyncFlow(models.Model):
         )
         return collector
 
+    def _compute_sandbox_preview_display(self):
+        for record in self:
+            record.sandbox_preview_display = format_json_value(record.sandbox_preview_data)
+
     def _create_version_snapshot(self, name: str):
         """Create a version record containing the current configuration."""
         data = json.dumps(self.export_configuration(), indent=2)
@@ -878,20 +931,20 @@ class OmniSyncFlow(models.Model):
         lines = []
         for line_conf in mapping_conf.get("lines", []):
             lines.append(
-                        (
-                            0,
-                            0,
-                            {
-                                "source_field": line_conf.get("source_field"),
-                                "target_field_name": line_conf.get("target_field_name"),
-                                "default_value": line_conf.get("default_value"),
-                                "formula": line_conf.get("formula"),
-                                "transform_chain": line_conf.get("transforms"),
-                                "is_external_identifier": line_conf.get("is_external_identifier", False),
-                                "relation_resolution": line_conf.get("relation_resolution", "none"),
-                            },
-                        )
-                    )
+                (
+                    0,
+                    0,
+                    {
+                        "source_field": line_conf.get("source_field"),
+                        "target_field_name": line_conf.get("target_field_name"),
+                        "default_value": line_conf.get("default_value"),
+                        "formula": line_conf.get("formula"),
+                        "transform_chain": line_conf.get("transforms"),
+                        "is_external_identifier": line_conf.get("is_external_identifier", False),
+                        "relation_resolution": line_conf.get("relation_resolution", "none"),
+                    },
+                )
+            )
         return (
             0,
             0,

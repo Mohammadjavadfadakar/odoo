@@ -36,7 +36,7 @@
                 <group>
                     <field name="conflict_id" readonly="1"/>
                     <field name="decision"/>
-                    <field name="preview" widget="json" readonly="1"/>
+                    <field name="preview_text" widget="text" class="o_text_monospaced" readonly="1"/>
                 </group>
                 <footer>
                     <button string="Apply" name="action_resolve" type="object" class="btn-primary"/>
@@ -53,7 +53,7 @@
             <form string="Sandbox Preview">
                 <group>
                     <field name="flow_id" readonly="1"/>
-                    <field name="preview_payload" widget="json" readonly="1"/>
+                    <field name="preview_payload_text" widget="text" class="o_text_monospaced" readonly="1"/>
                 </group>
                 <footer>
                     <button string="Refresh" name="action_preview" type="object" class="btn-primary"/>
@@ -89,7 +89,7 @@
                 <group>
                     <field name="template_id" readonly="1"/>
                     <field name="dry_run"/>
-                    <field name="result_message" readonly="1" widget="text"/>
+                    <field name="result_message" readonly="1" widget="text" class="o_text_monospaced"/>
                 </group>
                 <footer>
                     <button string="Apply" name="action_apply" type="object" class="btn-primary"/>

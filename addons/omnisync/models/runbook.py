@@ -25,16 +25,33 @@ class OmniSyncRunbook(models.Model):
         required=True,
         default=lambda self: self.env.company,
     )
-    line_ids = fields.One2many("omnisync.runbook.line", "runbook_id", copy=True)
-    description = fields.Text()
-    last_run = fields.Datetime(readonly=True)
+    line_ids = fields.One2many(
+        "omnisync.runbook.line",
+        "runbook_id",
+        copy=True,
+        help="Ordered steps that describe which flows are executed by the runbook.",
+    )
+    description = fields.Text(
+        help="High level instructions for operators triggering the runbook.",
+    )
+    last_run = fields.Datetime(
+        readonly=True,
+        help="Moment when the runbook was last queued for execution.",
+    )
     last_status = fields.Selection(
         [("idle", "Idle"), ("queued", "Queued"), ("failed", "Failed")],
         default="idle",
         readonly=True,
+        help="State of the most recent runbook execution attempt.",
     )
-    last_message = fields.Text(readonly=True)
-    last_duration = fields.Float(readonly=True)
+    last_message = fields.Text(
+        readonly=True,
+        help="Consolidated execution log describing queued flows and issues.",
+    )
+    last_duration = fields.Float(
+        readonly=True,
+        help="Duration in seconds spent orchestrating the previous run.",
+    )
     notify_user_id = fields.Many2one(
         "res.users",
         string="Notify User",
@@ -110,14 +127,28 @@ class OmniSyncRunbookLine(models.Model):
     _description = "OmniSync Runbook Line"
     _order = "sequence, id"
 
-    runbook_id = fields.Many2one("omnisync.runbook", required=True, ondelete="cascade")
-    sequence = fields.Integer(default=10)
-    flow_id = fields.Many2one("omnisync.flow", required=True)
+    runbook_id = fields.Many2one(
+        "omnisync.runbook",
+        required=True,
+        ondelete="cascade",
+        help="Parent runbook that owns this orchestration step.",
+    )
+    sequence = fields.Integer(
+        default=10,
+        help="Ordering helper to control execution precedence within the runbook.",
+    )
+    flow_id = fields.Many2one(
+        "omnisync.flow",
+        required=True,
+        help="Flow that is queued when the runbook reaches this step.",
+    )
     preview_mode = fields.Boolean(
         string="Preview Mode",
         help="Queue the flow in sandbox preview mode when enabled.",
     )
-    notes = fields.Text()
+    notes = fields.Text(
+        help="Optional operator notes clarifying prerequisites or manual steps.",
+    )
 
     @api.constrains("runbook_id", "flow_id")
     def _check_company(self):

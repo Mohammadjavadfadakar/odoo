@@ -14,6 +14,25 @@
         </field>
     </record>
 
+    <record id="view_omnisync_system_search" model="ir.ui.view">
+        <field name="name">omnisync.system.search</field>
+        <field name="model">omnisync.system</field>
+        <field name="arch" type="xml">
+            <search string="Search Systems">
+                <field name="name"/>
+                <field name="connector_type"/>
+                <field name="company_id"/>
+                <field name="auth_profile_id"/>
+                <filter name="filter_active" string="Active" domain="[('active', '=', True)]" help="Show active systems"/>
+                <filter name="filter_inactive" string="Inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_company" string="Company" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_connector" string="Connector" context="{'group_by': 'connector_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="view_omnisync_system_form" model="ir.ui.view">
         <field name="name">omnisync.system.form</field>
         <field name="model">omnisync.system</field>
@@ -24,19 +43,34 @@
                     <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Define how OmniSync connects to an external platform. Provide the
+                            <strong>Base URL</strong> and authentication profile, then tailor
+                            connector-specific settings in the <strong>Connector Settings</strong>
+                            tab. Use <strong>Test Connection</strong> to validate credentials
+                            before building flows.
+                        </p>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_inline"/>
+                        </h1>
+                        <field name="last_sync_status" widget="badge" class="oe_inline"/>
+                    </div>
                     <group>
                         <group>
-                            <field name="name"/>
                             <field name="connector_type"/>
                             <field name="base_url"/>
                             <field name="auth_profile_id" options="{'no_create': False}"/>
+                            <field name="company_id"/>
                             <field name="sandbox_mode"/>
                         </group>
                         <group>
-                            <field name="company_id"/>
-                            <field name="extra_headers" widget="json"/>
-                            <field name="default_params" widget="json"/>
-                            <field name="notes"/>
+                            <field name="extra_headers_json" widget="text" class="o_text_monospaced" placeholder="{\n  &quot;Authorization&quot;: &quot;Bearer ...&quot;\n}"/>
+                            <field name="default_params_json" widget="text" class="o_text_monospaced" placeholder="{\n  &quot;page&quot;: 1\n}"/>
+                            <field name="notes" colspan="2"/>
                         </group>
                     </group>
                     <notebook>
@@ -71,11 +105,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>
@@ -84,5 +114,6 @@
         <field name="name">Systems</field>
         <field name="res_model">omnisync.system</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_omnisync_system_search"/>
     </record>
 </odoo>

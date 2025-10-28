@@ -3,6 +3,8 @@
 
 from odoo import _, fields, models
 
+from ..tools import format_json_value
+
 
 class OmniSyncConflict(models.Model):
     """Store detected conflicts between remote payloads and Odoo records."""
@@ -17,9 +19,19 @@ class OmniSyncConflict(models.Model):
         or "Conflict",
         readonly=True,
     )
-    flow_id = fields.Many2one("omnisync.flow", required=True)
-    model_name = fields.Char(required=True)
-    record_id = fields.Integer(string="Record ID")
+    flow_id = fields.Many2one(
+        "omnisync.flow",
+        required=True,
+        help="Flow that detected the divergence between Odoo and the remote system.",
+    )
+    model_name = fields.Char(
+        required=True,
+        help="Technical name of the impacted Odoo model (e.g. res.partner).",
+    )
+    record_id = fields.Integer(
+        string="Record ID",
+        help="Identifier of the conflicting Odoo record if it is still available.",
+    )
     state = fields.Selection(
         [
             ("pending", "Pending"),
@@ -28,6 +40,7 @@ class OmniSyncConflict(models.Model):
         ],
         default="pending",
         tracking=True,
+        help="Tracks the lifecycle of the conflict through review and closure.",
     )
     resolution = fields.Selection(
         [
@@ -36,12 +49,50 @@ class OmniSyncConflict(models.Model):
             ("dismissed", "Dismissed"),
         ],
         tracking=True,
+        help="Decision applied when the conflict is closed.",
     )
-    external_payload = fields.Json(string="Remote Payload", readonly=True)
-    candidate_values = fields.Json(string="Mapped Values", readonly=True)
-    differences_json = fields.Json(string="Differences", readonly=True)
-    resolved_by = fields.Many2one("res.users", readonly=True)
-    resolved_on = fields.Datetime(readonly=True)
+    external_payload = fields.Json(
+        string="Remote Payload",
+        readonly=True,
+        help="Original payload received from the external system.",
+    )
+    candidate_values = fields.Json(
+        string="Mapped Values",
+        readonly=True,
+        help="Values OmniSync planned to write on the Odoo record.",
+    )
+    differences_json = fields.Json(
+        string="Differences",
+        readonly=True,
+        help="Field level diff computed between Odoo and external data.",
+    )
+    external_payload_display = fields.Text(
+        string="Remote Payload (JSON)",
+        compute="_compute_display_payloads",
+        readonly=True,
+        help="Formatted remote payload shown in the user interface.",
+    )
+    candidate_values_display = fields.Text(
+        string="Mapped Values (JSON)",
+        compute="_compute_display_payloads",
+        readonly=True,
+        help="Formatted candidate values that would be written to Odoo.",
+    )
+    differences_display = fields.Text(
+        string="Differences (JSON)",
+        compute="_compute_display_payloads",
+        readonly=True,
+        help="Human readable diff summarizing conflicting fields.",
+    )
+    resolved_by = fields.Many2one(
+        "res.users",
+        readonly=True,
+        help="User that resolved or dismissed the conflict.",
+    )
+    resolved_on = fields.Datetime(
+        readonly=True,
+        help="Timestamp when the conflict resolution was recorded.",
+    )
     company_id = fields.Many2one(
         "res.company",
         required=True,
@@ -103,3 +154,9 @@ class OmniSyncConflict(models.Model):
             "Conflict %(name)s resolved with decision: %(resolution)s"
         ) % {"name": self.name, "resolution": resolution}
         self.flow_id.message_post(body=body)
+
+    def _compute_display_payloads(self):
+        for record in self:
+            record.external_payload_display = format_json_value(record.external_payload)
+            record.candidate_values_display = format_json_value(record.candidate_values)
+            record.differences_display = format_json_value(record.differences_json)
