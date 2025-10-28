@@ -45,6 +45,14 @@
                     <field name="state" widget="statusbar" statusbar_visible="pending,synced,failed"/>
                 </header>
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Bindings keep a record of how Odoo objects map to external
+                            identifiers. Use the payload snapshot to troubleshoot mismatches and
+                            the <strong>Open Record</strong> button to jump directly to the
+                            impacted business document.
+                        </p>
+                    </div>
                     <group>
                         <group>
                             <field name="external_identifier"/>

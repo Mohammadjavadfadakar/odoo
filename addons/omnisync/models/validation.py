@@ -26,11 +26,13 @@ class OmniSyncValidationRule(models.Model):
         "res.company",
         required=True,
         default=lambda self: self.env.company,
+        help="Company scope used to evaluate the rule and restrict visibility.",
     )
     flow_id = fields.Many2one(
         "omnisync.flow",
         required=True,
         ondelete="cascade",
+        help="Flow where the rule is executed during synchronization.",
     )
     direction = fields.Selection(
         [
@@ -40,6 +42,7 @@ class OmniSyncValidationRule(models.Model):
         ],
         default="both",
         required=True,
+        help="Defines which synchronization direction should evaluate the rule.",
     )
     severity = fields.Selection(
         [
@@ -49,6 +52,7 @@ class OmniSyncValidationRule(models.Model):
         ],
         default="error",
         required=True,
+        help="Controls whether violations block processing or just raise warnings.",
     )
     expression = fields.Text(
         required=True,
@@ -57,10 +61,20 @@ class OmniSyncValidationRule(models.Model):
     message = fields.Char(
         required=True,
         default=lambda self: _("Validation failed"),
+        help="Fallback message displayed when the rule returns a failing result.",
     )
-    description = fields.Text()
-    last_triggered = fields.Datetime(readonly=True)
-    triggered_count = fields.Integer(readonly=True, default=0)
+    description = fields.Text(
+        help="Detailed guidance describing the business rule being enforced.",
+    )
+    last_triggered = fields.Datetime(
+        readonly=True,
+        help="Timestamp of the most recent violation raised by this rule.",
+    )
+    triggered_count = fields.Integer(
+        readonly=True,
+        default=0,
+        help="Total number of recorded violations for the rule.",
+    )
 
     def matches_direction(self, direction: str) -> bool:
         """Return whether the rule should run for the provided direction."""
@@ -154,8 +168,16 @@ class OmniSyncValidationLog(models.Model):
         default=lambda self: self.env["ir.sequence"].next_by_code("omnisync.validation")
         or _("Validation"),
     )
-    rule_id = fields.Many2one("omnisync.validation.rule", required=True)
-    flow_id = fields.Many2one("omnisync.flow", required=True)
+    rule_id = fields.Many2one(
+        "omnisync.validation.rule",
+        required=True,
+        help="Validation rule that produced this log entry.",
+    )
+    flow_id = fields.Many2one(
+        "omnisync.flow",
+        required=True,
+        help="Flow that triggered the validation rule violation.",
+    )
     direction = fields.Selection(
         [
             ("inbound", "Inbound"),
@@ -163,6 +185,7 @@ class OmniSyncValidationLog(models.Model):
             ("both", "Both"),
         ],
         required=True,
+        help="Direction that was being processed when the violation occurred.",
     )
     severity = fields.Selection(
         [
@@ -171,15 +194,24 @@ class OmniSyncValidationLog(models.Model):
             ("info", "Info"),
         ],
         required=True,
+        help="Severity inherited from the rule at the time of logging.",
     )
-    message = fields.Char(required=True)
-    payload_snapshot = fields.Json()
+    message = fields.Char(
+        required=True,
+        help="Explanation describing why the payload did not pass validation.",
+    )
+    payload_snapshot = fields.Json(
+        help="Sanitized payload data captured to reproduce the validation issue.",
+    )
     payload_snapshot_display = fields.Text(
         string="Payload Snapshot (JSON)",
         compute="_compute_payload_snapshot_display",
         readonly=True,
+        help="Formatted preview of the recorded payload snapshot.",
     )
-    details = fields.Text()
+    details = fields.Text(
+        help="Optional analyst notes with remediation steps or investigation results.",
+    )
     company_id = fields.Many2one(
         "res.company",
         required=True,
@@ -187,9 +219,19 @@ class OmniSyncValidationLog(models.Model):
     )
     res_model = fields.Char()
     res_id = fields.Integer()
-    handled = fields.Boolean(default=False)
-    handled_by = fields.Many2one("res.users", readonly=True)
-    handled_date = fields.Datetime(readonly=True)
+    handled = fields.Boolean(
+        default=False,
+        help="Flag indicating whether an operator has triaged the violation.",
+    )
+    handled_by = fields.Many2one(
+        "res.users",
+        readonly=True,
+        help="User that marked the log as handled.",
+    )
+    handled_date = fields.Datetime(
+        readonly=True,
+        help="Date when the log was marked as handled.",
+    )
 
     def action_mark_handled(self):
         """Mark the validation log as handled."""

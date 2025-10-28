@@ -19,6 +19,13 @@
         <field name="arch" type="xml">
             <form string="Mapping">
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Configure how incoming payload fields map to Odoo targets. Use the
+                            <strong>Lines</strong> tab to describe each field transformation and
+                            flag external identifiers for binding reconciliation.
+                        </p>
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>
@@ -58,6 +65,61 @@
     <record id="action_omnisync_mapping" model="ir.actions.act_window">
         <field name="name">Mappings</field>
         <field name="res_model">omnisync.mapping</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_omnisync_mapping_line_tree" model="ir.ui.view">
+        <field name="name">omnisync.mapping.line.tree</field>
+        <field name="model">omnisync.mapping.line</field>
+        <field name="arch" type="xml">
+            <list string="Mapping Lines" default_order="sequence">
+                <field name="sequence"/>
+                <field name="mapping_id"/>
+                <field name="source_field"/>
+                <field name="target_field_name"/>
+                <field name="transform_chain"/>
+                <field name="is_external_identifier"/>
+                <field name="relation_resolution"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_omnisync_mapping_line_form" model="ir.ui.view">
+        <field name="name">omnisync.mapping.line.form</field>
+        <field name="model">omnisync.mapping.line</field>
+        <field name="arch" type="xml">
+            <form string="Mapping Line">
+                <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Specify where data is sourced from and how it should be transformed
+                            before writing to Odoo. Combine <strong>Transforms</strong> with the
+                            optional <strong>Formula</strong> field for advanced derivations.
+                        </p>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="mapping_id"/>
+                            <field name="sequence"/>
+                            <field name="source_field"/>
+                            <field name="target_field_name"/>
+                        </group>
+                        <group>
+                            <field name="default_value"/>
+                            <field name="transform_chain"/>
+                            <field name="formula" widget="text"/>
+                            <field name="relation_resolution"/>
+                            <field name="is_external_identifier"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_omnisync_mapping_line" model="ir.actions.act_window">
+        <field name="name">Mapping Lines</field>
+        <field name="res_model">omnisync.mapping.line</field>
         <field name="view_mode">list,form</field>
     </record>
 </odoo>

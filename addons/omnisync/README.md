@@ -33,7 +33,7 @@ OmniSync is a no-code/low-code integration engine for Odoo Enterprise. It enable
 
 ## Documentation
 
-Comprehensive end-user and operator documentation is available under [`doc/`](doc/index.rst). The guide covers installation, configuration, mapping design, flow orchestration, monitoring, automation, templates, troubleshooting, and API references for programmatic control.
+Comprehensive end-user and operator documentation is available under [`doc/`](doc/index.rst). The guide covers installation, configuration, mapping design, flow orchestration, monitoring, automation, templates, troubleshooting, advanced operator help, and API references for programmatic control.
 
 ## Security
 

@@ -43,6 +43,15 @@
                     <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Define how OmniSync connects to an external platform. Provide the
+                            <strong>Base URL</strong> and authentication profile, then tailor
+                            connector-specific settings in the <strong>Connector Settings</strong>
+                            tab. Use <strong>Test Connection</strong> to validate credentials
+                            before building flows.
+                        </p>
+                    </div>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1>

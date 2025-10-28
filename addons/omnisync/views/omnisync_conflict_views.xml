@@ -46,6 +46,13 @@
                     <field name="state" widget="statusbar" statusbar_visible="pending,resolved,dismissed"/>
                 </header>
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Conflicts capture differences between external payloads and Odoo.
+                            Review the <strong>Differences</strong> tab to understand what changed
+                            and launch the resolution wizard to apply the correct outcome.
+                        </p>
+                    </div>
                     <group>
                         <group>
                             <field name="name" readonly="1"/>

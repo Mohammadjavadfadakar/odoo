@@ -54,6 +54,14 @@
                     <field name="approval_state" widget="statusbar" statusbar_visible="draft,awaiting,approved,rejected"/>
                 </header>
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Flows orchestrate how data travels between Odoo and your external
+                            system. Configure direction, scheduling, and mappings, then generate a
+                            <strong>Preview</strong> before promoting changes through the approval
+                            workflow.
+                        </p>
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>

@@ -23,5 +23,9 @@
     <menuitem id="menu_omnisync_validation_rules" name="Validation Rules" parent="menu_omnisync_configuration" action="action_omnisync_validation_rules" sequence="60" groups="omnisync.group_omnisync_admin"/>
     <menuitem id="menu_omnisync_escalation_policies" name="Escalation Policies" parent="menu_omnisync_configuration" action="action_omnisync_escalation_policies" sequence="70" groups="omnisync.group_omnisync_admin"/>
     <menuitem id="menu_omnisync_runbook" name="Runbooks" parent="menu_omnisync_configuration" action="action_omnisync_runbook" sequence="80" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_advanced_records" name="Advanced Records" parent="menu_omnisync_configuration" sequence="85" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_mapping_lines" name="Mapping Lines" parent="menu_omnisync_advanced_records" action="action_omnisync_mapping_line" sequence="10" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_runbook_lines" name="Runbook Lines" parent="menu_omnisync_advanced_records" action="action_omnisync_runbook_line" sequence="20" groups="omnisync.group_omnisync_admin"/>
+    <menuitem id="menu_omnisync_health_logs" name="Health Logs" parent="menu_omnisync_advanced_records" action="action_omnisync_health_log" sequence="30" groups="omnisync.group_omnisync_admin"/>
     <menuitem id="menu_omnisync_validation_logs" name="Validation Logs" parent="menu_omnisync_operations" action="action_omnisync_validation_logs" sequence="45" groups="omnisync.group_omnisync_admin,omnisync.group_omnisync_dashboard"/>
 </odoo>
