@@ -23,6 +23,13 @@
         <field name="arch" type="xml">
             <form string="Validation Rule">
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Validation rules run before records are created or updated. Author a
+                            Python expression that returns <code>True</code> when data is valid or
+                            specify a tuple with a custom error message for richer feedback.
+                        </p>
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>
@@ -96,6 +103,13 @@
         <field name="arch" type="xml">
             <form string="Validation Log">
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Review the captured payload snapshot and remediation notes before
+                            marking the log as handled. Update the originating rule or flow to
+                            prevent recurring violations.
+                        </p>
+                    </div>
                     <group>
                         <field name="name"/>
                         <field name="flow_id"/>
@@ -112,7 +126,7 @@
                         <field name="res_id"/>
                     </group>
                     <group>
-                        <field name="payload_snapshot" widget="json" readonly="1"/>
+                        <field name="payload_snapshot_display" widget="text" readonly="1"/>
                     </group>
                     <footer>
                         <button name="action_mark_handled" string="Mark Handled" type="object" class="btn-primary" modifiers="{'invisible': [('handled', '=', True)]}"/>

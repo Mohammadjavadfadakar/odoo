@@ -18,6 +18,7 @@ class OmniSyncDashboard(models.TransientModel):
     binding_failed_count = fields.Integer(compute="_compute_metrics")
     validation_block_count = fields.Integer(compute="_compute_metrics")
     last_jobs = fields.Json(compute="_compute_metrics")
+    last_jobs_display = fields.Text(compute="_compute_metrics")
     health_failure_count = fields.Integer(compute="_compute_metrics")
     runbook_queue_count = fields.Integer(compute="_compute_metrics")
 
@@ -41,7 +42,7 @@ class OmniSyncDashboard(models.TransientModel):
             record.runbook_queue_count = self.env["omnisync.runbook"].search_count(
                 [("last_status", "=", "queued")]
             )
-            record.last_jobs = [
+            last_jobs = [
                 {
                     "name": job.name,
                     "flow": job.flow_id.name,
@@ -51,6 +52,12 @@ class OmniSyncDashboard(models.TransientModel):
                 }
                 for job in jobs
             ]
+            record.last_jobs = last_jobs
+            record.last_jobs_display = "\n".join(
+                f"{fields.Datetime.to_string(item['create_date'])} | {item['flow']} | "
+                f"{item['status'].upper()} ({item['records']} records)"
+                for item in last_jobs
+            ) if last_jobs else ""
 
     def action_reload(self):
         return {

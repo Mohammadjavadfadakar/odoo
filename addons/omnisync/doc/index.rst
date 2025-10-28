@@ -18,6 +18,7 @@ Use the sections below to learn how to deploy OmniSync, configure external syste
    configuration
    mappings
    flows
+   advanced_help
    monitoring
    templates
    automation

@@ -36,6 +36,7 @@
         "views/omnisync_menus.xml",
         "views/omnisync_wizard_views.xml",
     ],
+    "images": ["static/description/icon.svg"],
     "application": True,
     "installable": True,
 }

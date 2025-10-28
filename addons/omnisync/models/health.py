@@ -34,12 +34,14 @@ class OmniSyncHealthCheck(models.Model):
         string="System",
         required=True,
         tracking=True,
+        help="Integration system that the health check supervises.",
     )
     flow_id = fields.Many2one(
         "omnisync.flow",
         string="Flow",
         tracking=True,
         domain="[('system_id', '=', system_id)]",
+        help="Optional flow that narrows the scope of the check.",
     )
     check_type = fields.Selection(
         [
@@ -49,18 +51,27 @@ class OmniSyncHealthCheck(models.Model):
         ],
         required=True,
         default="connector",
+        help="Technique executed by the health check to validate integrations.",
     )
     severity = fields.Selection(
         [("info", "Info"), ("warning", "Warning"), ("critical", "Critical")],
         default="warning",
+        help="Importance level used when notifying about failing checks.",
     )
-    last_run = fields.Datetime(readonly=True)
+    last_run = fields.Datetime(
+        readonly=True,
+        help="Timestamp of the most recent health check execution.",
+    )
     last_status = fields.Selection(
         [("idle", "Idle"), ("success", "Success"), ("failed", "Failed")],
         default="idle",
         readonly=True,
+        help="Outcome of the latest health check run.",
     )
-    last_message = fields.Text(readonly=True)
+    last_message = fields.Text(
+        readonly=True,
+        help="Summary explaining the last health check result.",
+    )
     target_endpoint = fields.Char(
         string="Endpoint",
         help="Optional endpoint override used for ping checks.",
@@ -75,7 +86,11 @@ class OmniSyncHealthCheck(models.Model):
         string="Responsible",
         help="Optional user that receives health check activities.",
     )
-    log_ids = fields.One2many("omnisync.health.log", "check_id")
+    log_ids = fields.One2many(
+        "omnisync.health.log",
+        "check_id",
+        help="Historic executions that provide context during troubleshooting.",
+    )
 
     @api.constrains("company_id", "system_id")
     def _check_company_consistency(self):

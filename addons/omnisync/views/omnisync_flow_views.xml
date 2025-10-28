@@ -18,6 +18,28 @@
         </field>
     </record>
 
+    <record id="view_omnisync_flow_search" model="ir.ui.view">
+        <field name="name">omnisync.flow.search</field>
+        <field name="model">omnisync.flow</field>
+        <field name="arch" type="xml">
+            <search string="Search Flows">
+                <field name="name"/>
+                <field name="system_id"/>
+                <field name="direction"/>
+                <field name="approval_state"/>
+                <field name="model_id"/>
+                <filter name="filter_active" string="Active" domain="[('active', '=', True)]" help="Show active flows"/>
+                <filter name="filter_inactive" string="Inactive" domain="[('active', '=', False)]"/>
+                <filter name="filter_failed" string="Failed" domain="[('last_status', '=', 'failed')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_system" string="System" context="{'group_by': 'system_id'}"/>
+                    <filter name="group_direction" string="Direction" context="{'group_by': 'direction'}"/>
+                    <filter name="group_approval" string="Approval" context="{'group_by': 'approval_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
     <record id="view_omnisync_flow_form" model="ir.ui.view">
         <field name="name">omnisync.flow.form</field>
         <field name="model">omnisync.flow</field>
@@ -32,6 +54,14 @@
                     <field name="approval_state" widget="statusbar" statusbar_visible="draft,awaiting,approved,rejected"/>
                 </header>
                 <sheet>
+                    <div class="alert alert-info o_form_sheet_full_width" role="status">
+                        <p>
+                            Flows orchestrate how data travels between Odoo and your external
+                            system. Configure direction, scheduling, and mappings, then generate a
+                            <strong>Preview</strong> before promoting changes through the approval
+                            workflow.
+                        </p>
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>
@@ -62,7 +92,7 @@
                             <group modifiers="{'invisible': [('direction', '=', 'outbound')]}">
                                 <field name="inbound_endpoint"/>
                                 <field name="graphql_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'graphql')]}"/>
-                                <field name="graphql_variables" modifiers="{'invisible': [('system_id.connector_type', '!=', 'graphql')]}" widget="json"/>
+                                <field name="graphql_variables" modifiers="{'invisible': [('system_id.connector_type', '!=', 'graphql')]}" widget="text" class="o_text_monospaced"/>
                                 <field name="db_inbound_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'database')]}"/>
                                 <field name="file_inbound_path" modifiers="{'invisible': [('system_id.connector_type', '!=', 'file')]}"/>
                                 <field name="webhook_event_code" modifiers="{'invisible': [('system_id.connector_type', '!=', 'webhook')]}"/>
@@ -72,7 +102,7 @@
                         <page string="Outbound">
                             <group modifiers="{'invisible': [('direction', '=', 'inbound')]}">
                                 <field name="outbound_endpoint"/>
-                                <field name="payload_template" widget="json"/>
+                                <field name="payload_template" widget="text" class="o_text_monospaced"/>
                                 <field name="db_outbound_query" modifiers="{'invisible': [('system_id.connector_type', '!=', 'database')]}"/>
                                 <field name="file_outbound_path" modifiers="{'invisible': [('system_id.connector_type', '!=', 'file')]}"/>
                                 <field name="queue_topic" modifiers="{'invisible': [('system_id.connector_type', '!=', 'queue')]}"/>
@@ -119,7 +149,7 @@
                         </page>
                         <page string="Preview">
                             <group>
-                                <field name="sandbox_preview_data" widget="json" readonly="1"/>
+                                <field name="sandbox_preview_display" widget="text" class="o_text_monospaced" readonly="1"/>
                                 <field name="last_preview_at" readonly="1"/>
                             </group>
                         </page>
@@ -158,5 +188,6 @@
         <field name="name">Flows</field>
         <field name="res_model">omnisync.flow</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_omnisync_flow_search"/>
     </record>
 </odoo>

@@ -6,6 +6,8 @@ from typing import Any, Dict, Optional
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
+from ..tools import format_json_value
+
 
 class OmniSyncBinding(models.Model):
     """Represents the relationship between an Odoo record and an external ID."""
@@ -21,6 +23,7 @@ class OmniSyncBinding(models.Model):
         required=True,
         ondelete="cascade",
         tracking=True,
+        help="Flow that produced the binding and governs synchronization rules.",
     )
     system_id = fields.Many2one(
         "omnisync.system",
@@ -34,18 +37,42 @@ class OmniSyncBinding(models.Model):
         store=True,
         readonly=True,
     )
-    model_id = fields.Many2one("ir.model", required=True, ondelete="cascade")
-    model_name = fields.Char(related="model_id.model", store=True, readonly=True)
-    res_id = fields.Integer(string="Record ID", required=True, index=True)
+    model_id = fields.Many2one(
+        "ir.model",
+        required=True,
+        ondelete="cascade",
+        help="Technical model storing the synchronized record in Odoo.",
+    )
+    model_name = fields.Char(
+        string="Model Technical Name",
+        related="model_id.model",
+        store=True,
+        readonly=True,
+    )
+    res_id = fields.Integer(
+        string="Record ID",
+        required=True,
+        index=True,
+        help="Identifier of the linked Odoo record on the target model.",
+    )
     direction = fields.Selection(
         [("inbound", "Inbound"), ("outbound", "Outbound")],
         required=True,
         default="inbound",
         index=True,
         tracking=True,
+        help="Indicates whether the binding originates from imports or exports.",
     )
-    external_identifier = fields.Char(required=True, index=True, tracking=True)
-    last_synced_at = fields.Datetime(index=True)
+    external_identifier = fields.Char(
+        required=True,
+        index=True,
+        tracking=True,
+        help="Primary key or identifier provided by the external system.",
+    )
+    last_synced_at = fields.Datetime(
+        index=True,
+        help="Timestamp of the most recent synchronization for this record.",
+    )
     state = fields.Selection(
         [
             ("pending", "Pending"),
@@ -55,13 +82,25 @@ class OmniSyncBinding(models.Model):
         default="pending",
         tracking=True,
         index=True,
+        help="Lifecycle of the binding as records move through synchronization.",
     )
-    last_error = fields.Text()
-    payload_snapshot = fields.Json()
+    last_error = fields.Text(
+        help="Failure reason captured during the last synchronization attempt.",
+    )
+    payload_snapshot = fields.Json(
+        help="Raw payload persisted for troubleshooting and replay operations.",
+    )
+    payload_snapshot_display = fields.Text(
+        string="Payload Snapshot (JSON)",
+        compute="_compute_payload_snapshot_display",
+        readonly=True,
+        help="Formatted preview of the stored payload snapshot for analysts.",
+    )
     record_display_name = fields.Char(
         string="Record Name",
         compute="_compute_record_display_name",
         store=False,
+        help="Human friendly name of the bound Odoo record when available.",
     )
 
     _sql_constraints = [
@@ -147,3 +186,7 @@ class OmniSyncBinding(models.Model):
             "view_mode": "form",
             "target": "current",
         }
+
+    def _compute_payload_snapshot_display(self):
+        for record in self:
+            record.payload_snapshot_display = format_json_value(record.payload_snapshot)

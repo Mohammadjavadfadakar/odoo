@@ -9,7 +9,9 @@ from typing import Any, Dict, List, Optional
 
 import requests
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
+
+from ..tools import format_json_value, parse_json_text
 
 _logger = logging.getLogger(__name__)
 
@@ -225,9 +227,6 @@ class FileConnector(BaseConnector):
             file_path = base_path
         if operation == "read":
             if not file_path.exists():
-                raise UserError(_("File %s was not found") % file_path)
-        if operation == "read":
-            if not file_path.exists():
                 if target_path:
                     raise UserError(_("File %s was not found") % file_path)
                 file_path.mkdir(parents=True, exist_ok=True)
@@ -365,7 +364,11 @@ class OmniSyncSystem(models.Model):
     _description = "OmniSync Integration System"
     _inherit = ["mail.thread", "mail.activity.mixin"]
 
-    name = fields.Char(required=True, tracking=True)
+    name = fields.Char(
+        required=True,
+        tracking=True,
+        help="Human readable label used to identify the external platform.",
+    )
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         "res.company",
@@ -387,15 +390,43 @@ class OmniSyncSystem(models.Model):
         required=True,
         default="rest",
     )
-    base_url = fields.Char()
-    auth_profile_id = fields.Many2one("omnisync.auth.profile", string="Auth Profile")
-    extra_headers = fields.Json(string="Extra Headers")
-    default_params = fields.Json(string="Default Parameters")
+    base_url = fields.Char(
+        help="Root URL used by REST, SOAP, and GraphQL connectors when composing requests.",
+    )
+    auth_profile_id = fields.Many2one(
+        "omnisync.auth.profile",
+        string="Auth Profile",
+        help="Authentication profile that injects credentials into connector calls.",
+    )
+    extra_headers = fields.Json(
+        string="Extra Headers",
+        help="Dictionary of HTTP headers that is merged into every connector request.",
+    )
+    extra_headers_json = fields.Text(
+        string="Extra Headers (JSON)",
+        compute="_compute_extra_headers_json",
+        inverse="_inverse_extra_headers_json",
+        readonly=False,
+        help="Pretty printed representation used to edit the JSON headers.",
+    )
+    default_params = fields.Json(
+        string="Default Parameters",
+        help="Default query parameters appended to outbound connector calls.",
+    )
+    default_params_json = fields.Text(
+        string="Default Parameters (JSON)",
+        compute="_compute_default_params_json",
+        inverse="_inverse_default_params_json",
+        readonly=False,
+        help="Pretty printed representation used to edit the default query parameters.",
+    )
     sandbox_mode = fields.Boolean(
         help="Enable sandbox mode to simulate the synchronization without"
         " committing data changes."
     )
-    notes = fields.Text()
+    notes = fields.Text(
+        help="Free form documentation for operators describing integration nuances.",
+    )
     last_sync_status = fields.Selection(
         [
             ("idle", "Idle"),
@@ -404,7 +435,12 @@ class OmniSyncSystem(models.Model):
         ],
         default="idle",
     )
-    flow_ids = fields.One2many("omnisync.flow", "system_id", string="Flows")
+    flow_ids = fields.One2many(
+        "omnisync.flow",
+        "system_id",
+        string="Flows",
+        help="Synchronization flows configured to use this system as their connector.",
+    )
     graphql_default_query = fields.Text(
         help="Optional default GraphQL query executed when flows do not provide one."
     )
@@ -413,14 +449,28 @@ class OmniSyncSystem(models.Model):
         string="Database Engine",
         default="postgres",
     )
-    db_host = fields.Char(string="Database Host")
-    db_port = fields.Integer(string="Database Port", default=5432)
-    db_name = fields.Char(string="Database Name")
-    db_username = fields.Char(string="Database User")
+    db_host = fields.Char(
+        string="Database Host",
+        help="Hostname or IP address of the external database server.",
+    )
+    db_port = fields.Integer(
+        string="Database Port",
+        default=5432,
+        help="Port exposed by the database server. Automatically adjusted per engine.",
+    )
+    db_name = fields.Char(
+        string="Database Name",
+        help="Logical database/schema that OmniSync connects to when executing SQL.",
+    )
+    db_username = fields.Char(
+        string="Database User",
+        help="Login used when authenticating against the external database.",
+    )
     file_backend = fields.Selection(
         [("local", "Local Storage")],
         string="File Backend",
         default="local",
+        help="File storage implementation responsible for reading and writing documents.",
     )
     file_base_path = fields.Char(
         string="Base Path",
@@ -430,6 +480,7 @@ class OmniSyncSystem(models.Model):
         [("json", "JSON"), ("csv", "CSV")],
         string="File Format",
         default="json",
+        help="Default serialization format used when exchanging files with the system.",
     )
     webhook_secret = fields.Char(
         string="Webhook Secret",
@@ -443,6 +494,7 @@ class OmniSyncSystem(models.Model):
         ],
         string="Queue Backend",
         default="internal",
+        help="Message queue technology used when publishing or consuming events.",
     )
     queue_topic_prefix = fields.Char(
         string="Default Topic",
@@ -573,6 +625,36 @@ class OmniSyncSystem(models.Model):
                 "topic": self.queue_topic_prefix,
             },
         }
+
+    @api.depends("extra_headers")
+    def _compute_extra_headers_json(self):
+        for record in self:
+            record.extra_headers_json = format_json_value(record.extra_headers)
+
+    @api.depends("default_params")
+    def _compute_default_params_json(self):
+        for record in self:
+            record.default_params_json = format_json_value(record.default_params)
+
+    def _inverse_extra_headers_json(self):
+        for record in self:
+            try:
+                record.extra_headers = parse_json_text(record.extra_headers_json)
+            except ValueError as error:
+                raise ValidationError(
+                    _("The extra headers value must be valid JSON.\n%(error)s")
+                    % {"error": error}
+                ) from error
+
+    def _inverse_default_params_json(self):
+        for record in self:
+            try:
+                record.default_params = parse_json_text(record.default_params_json)
+            except ValueError as error:
+                raise ValidationError(
+                    _("The default parameters value must be valid JSON.\n%(error)s")
+                    % {"error": error}
+                ) from error
 
     def _get_auth_payload(self) -> Dict[str, Any]:
         """Return decrypted payload from the related authentication profile."""
