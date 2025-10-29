@@ -1,0 +1,24 @@
+.o_connector_run_kanban {
+    .o_connector_run_status {
+        margin-top: 4px;
+        padding: 2px 6px;
+        border-radius: 6px;
+        font-size: 12px;
+        &.status-success {
+            background-color: #d3f9d8;
+            color: #245c2a;
+        }
+        &.status-failed {
+            background-color: #ffe3e3;
+            color: #c92a2a;
+        }
+        &.status-running {
+            background-color: #fff3bf;
+            color: #e67700;
+        }
+        &.status-partial {
+            background-color: #e7f5ff;
+            color: #1971c2;
+        }
+    }
+}

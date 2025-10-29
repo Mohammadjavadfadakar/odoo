@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_connector_profile" model="ir.actions.act_window">
+        <field name="name">Connector Profiles</field>
+        <field name="res_model">connector.profile</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_connector_endpoint" model="ir.actions.act_window">
+        <field name="name">Connector Endpoints</field>
+        <field name="res_model">connector.endpoint</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_connector_mapping" model="ir.actions.act_window">
+        <field name="name">Connector Mappings</field>
+        <field name="res_model">connector.mapping</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_connector_run" model="ir.actions.act_window">
+        <field name="name">Connector Runs</field>
+        <field name="res_model">connector.run</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+    </record>
+
+    <menuitem id="menu_connector_root" name="Connector Hub" parent="base.menu_custom" sequence="50"/>
+
+    <menuitem id="menu_connector_configuration" name="Configurations" parent="menu_connector_root" sequence="10"/>
+    <menuitem id="menu_connector_profile" name="Connector Profiles" parent="menu_connector_configuration" action="action_connector_profile" sequence="10"/>
+    <menuitem id="menu_connector_endpoints" name="Endpoints" parent="menu_connector_configuration" action="action_connector_endpoint" sequence="20"/>
+    <menuitem id="menu_connector_mappings" name="Mappings" parent="menu_connector_configuration" action="action_connector_mapping" sequence="30"/>
+
+    <menuitem id="menu_connector_dashboard" name="Synchronization Dashboard" parent="menu_connector_root" action="action_connector_run" sequence="20"/>
+</odoo>

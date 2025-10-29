@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_connector_profile_tree" model="ir.ui.view">
+        <field name="name">connector.profile.list</field>
+        <field name="model">connector.profile</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="system_type"/>
+                <field name="auth_mode"/>
+                <field name="is_active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_connector_profile_form" model="ir.ui.view">
+        <field name="name">connector.profile.form</field>
+        <field name="model">connector.profile</field>
+        <field name="arch" type="xml">
+            <form string="Connector Profile">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="sequence"/>
+                        <field name="system_type"/>
+                        <field name="auth_mode"/>
+                        <field name="base_url"/>
+                        <field name="is_active"/>
+                    </group>
+                    <notebook>
+                        <page string="Authentication">
+                            <field name="auth_payload" widget="json_widget" options="{'mode': 'tree'}"/>
+                            <field name="headers_template" widget="json_widget" options="{'mode': 'tree'}"/>
+                        </page>
+                        <page string="Endpoints">
+                            <field name="endpoint_ids"/>
+                        </page>
+                        <page string="Mappings">
+                            <field name="mapping_ids"/>
+                        </page>
+                        <page string="Runs">
+                            <field name="run_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_connector_endpoint_tree" model="ir.ui.view">
+        <field name="name">connector.endpoint.list</field>
+        <field name="model">connector.endpoint</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="profile_id"/>
+                <field name="http_method"/>
+                <field name="route"/>
+                <field name="pagination_mode"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_connector_endpoint_form" model="ir.ui.view">
+        <field name="name">connector.endpoint.form</field>
+        <field name="model">connector.endpoint</field>
+        <field name="arch" type="xml">
+            <form string="Connector Endpoint">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="profile_id"/>
+                        <field name="active"/>
+                    </group>
+                    <group>
+                        <field name="http_method"/>
+                        <field name="route"/>
+                        <field name="response_type"/>
+                    </group>
+                    <group string="Pagination">
+                        <field name="pagination_mode"/>
+                        <field name="pagination_field" help="Cursor field used when pagination mode is set to cursor."/>
+                        <field name="pagination_limit" help="Page size used for offset or page-based pagination."/>
+                    </group>
+                    <group string="Payload">
+                        <field name="request_params" widget="json_widget" options="{'mode': 'tree'}"/>
+                        <field name="request_body_template" widget="json_widget" options="{'mode': 'tree'}"/>
+                    </group>
+                    <notebook>
+                        <page string="Mappings">
+                            <field name="mapping_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_connector_mapping_tree" model="ir.ui.view">
+        <field name="name">connector.mapping.list</field>
+        <field name="model">connector.mapping</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="profile_id"/>
+                <field name="endpoint_id"/>
+                <field name="direction"/>
+                <field name="model_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_connector_mapping_form" model="ir.ui.view">
+        <field name="name">connector.mapping.form</field>
+        <field name="model">connector.mapping</field>
+        <field name="arch" type="xml">
+            <form string="Connector Mapping">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="profile_id"/>
+                        <field name="endpoint_id"/>
+                        <field name="direction"/>
+                        <field name="model_id"/>
+                    </group>
+                    <group>
+                        <field name="sequence"/>
+                        <field name="domain_filter"/>
+                    </group>
+                    <group>
+                        <field name="field_mapping" widget="json_widget" options="{'mode': 'tree'}"/>
+                        <field name="validators" widget="json_widget" options="{'mode': 'tree'}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
