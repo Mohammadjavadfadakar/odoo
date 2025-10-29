@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_connector_run_tree" model="ir.ui.view">
+        <field name="name">connector.run.list</field>
+        <field name="model">connector.run</field>
+        <field name="arch" type="xml">
+            <list string="Connector Runs">
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="profile_id"/>
+                <field name="endpoint_id"/>
+                <field name="direction"/>
+                <field name="status"/>
+                <field name="message"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_connector_run_form" model="ir.ui.view">
+        <field name="name">connector.run.form</field>
+        <field name="model">connector.run</field>
+        <field name="arch" type="xml">
+            <form string="Connector Run">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="profile_id"/>
+                        <field name="endpoint_id"/>
+                        <field name="direction"/>
+                        <field name="status"/>
+                        <field name="duration"/>
+                    </group>
+                    <group>
+                        <field name="payload_request" widget="json_widget" options="{'mode': 'tree'}"/>
+                        <field name="payload_response" widget="json_widget" options="{'mode': 'tree'}"/>
+                    </group>
+                    <group>
+                        <field name="message"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_connector_run_kanban" model="ir.ui.view">
+        <field name="name">connector.run.kanban</field>
+        <field name="model">connector.run</field>
+        <field name="arch" type="xml">
+            <kanban class="o_connector_run_kanban" js_class="connector_run_kanban">
+                <field name="profile_id"/>
+                <field name="endpoint_id"/>
+                <field name="direction"/>
+                <field name="status"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong t-esc="record.profile_id.raw_value"/>
+                                <div class="o_connector_run_status" t-attf-class="status-#{record.status.raw_value}">
+                                    <span t-esc="record.status.raw_value"/>
+                                </div>
+                                <div>
+                                    <span class="text-muted">Endpoint:</span>
+                                    <span t-esc="record.endpoint_id.raw_value or '-'"/>
+                                </div>
+                                <div>
+                                    <span class="text-muted">Direction:</span>
+                                    <span t-esc="record.direction.raw_value"/>
+                                </div>
+                                <div>
+                                    <span class="text-muted">Message:</span>
+                                    <span t-esc="record.message.raw_value or ''"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>
